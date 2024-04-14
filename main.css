@@ -1,0 +1,46 @@
+*{
+   margin: 0;
+   padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+#ground {
+  position: absolute;
+  background: grey;
+  top: 60vh;
+  height: 40vh;
+  width: 100vw;
+  left:0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#hero {
+    height: 50vh;
+    aspect-ratio: 1/1;
+    position: absolute;
+    top: 20vh;
+    left: 10vw;
+}
+
+.opponent {
+    height: 10vh;
+    aspect-ratio: 1/1;
+    background: blue;
+    position: absolute;
+    top: 50vh;
+    left: 45vw;
+}
+
+#data {
+  font-size: xx-large;
+}
+
+#heroImg {
+  height: 80%;
+  width: auto;
+}

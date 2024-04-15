@@ -50,7 +50,6 @@ var executed = false;
 var currentHeroImgSuffix = 1;
 
 
-
 //speed 
 
 
@@ -66,7 +65,6 @@ var pixelMovePerMs = 1;
 
 
 var heroImg = document.getElementById("heroImg") as HTMLImageElement;
-
 
 
 const injectTopic = () => {

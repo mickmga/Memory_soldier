@@ -65,7 +65,7 @@ var pixelMovePerMs = 1;
 
 
 
-var heroImg = document.getElementById("heroImg");
+var heroImg = document.getElementById("heroImg") as HTMLImageElement;
 
 
 
@@ -210,20 +210,4 @@ const killOpponent = (opponent: HTMLElement) => {
 
   setTimeout( launchNewOpponent, next_opponent_appearance_delay_in_ms);
   
-}
-
-const animateCharacter = () => {
-
-  if(!heroImg) return;
- 
-   if(currentHeroImgSuffix === 8) {
-    currentHeroImgSuffix = 1;
-   } else {
-    currentHeroImgSuffix++;
-   }
-
-
-   heroImg.style.src = `hero${currentHeroImgSuffix}.p`;
-
-   
 }

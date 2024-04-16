@@ -25,6 +25,35 @@ class Movement {
   }
 }
 
+class OpponentsOnScreen {
+  opponents: Opponent[];
+
+  constructor() {
+      this.opponents = [];
+  }
+
+  addOpponent(opponent: Opponent) {
+      this.opponents.push(opponent);
+  }
+
+  removeOpponentAtIndex(index: number) {
+      if (index >= 0 && index < this.opponents.length) {
+          this.opponents.splice(index, 1);
+      } else {
+          console.error("Invalid index provided for removing opponent.");
+      }
+  }
+
+  getOpponentAtIndex(index: number): Opponent | undefined {
+      if (index >= 0 && index < this.opponents.length) {
+          return this.opponents[index];
+      } else {
+          console.error("Invalid index provided for getting opponent.");
+          return undefined;
+      }
+  }
+}
+
 type Character = HTMLElement;
 
 
@@ -59,7 +88,6 @@ const buildInjectAndlaunchNextOpponent = () => {
   //launch
 
   triggerOpponentMovement(opponent);
-
 }
 
 const launchNextOpponent = () => {

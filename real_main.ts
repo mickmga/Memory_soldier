@@ -57,14 +57,24 @@ class OpponentsOnScreen {
 type Character = HTMLElement;
 
 
-const LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2 );
-const RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2 );
+const LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2);
+const RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2);
+
+const ELEMENTS_REFERENCE_POINT = 'left';
+
+const HERO_HIT_POINT = document.getElementById("hero")!!;
 
 var animateCharacterCount = 0;
 var currentHeroImgSuffix = 0;
 
 var hero =  document.getElementById("hero")!!;
 var heroImg = document.getElementById("heroImg") as HTMLImageElement;
+
+var opponentsOnScreen: OpponentsOnScreen;
+
+const initOpponentsOnScreen = () => {
+  opponentsOnScreen = new OpponentsOnScreen();
+}
 
 
 const createOpponentElement = () => {
@@ -78,7 +88,7 @@ const setKeyPressListener = () => {
 // Function to execute when space key is pressed
 const handleSpaceKeyPress = (event: KeyboardEvent) => {
   if (event.key === " ") {
-      alert("opponent killed!")
+    heroHits();
   }
 }
 
@@ -89,6 +99,7 @@ document.addEventListener("keydown", handleSpaceKeyPress);
 
 
 window.onload = () => {
+  initOpponentsOnScreen();
   setKeyPressListener();
   buildInjectAndlaunchNextOpponent();
   animateCharacter();
@@ -119,6 +130,7 @@ const getNextOpponent = () => {
 
 const injectOpponent = (opponent: Opponent) => {
    document.body.append(opponent.element);
+   opponentsOnScreen.addOpponent(opponent);
 }
 
 const getNextOpponentData = (): string => {
@@ -157,7 +169,7 @@ const animateCharacter = () => {
 }
 
 const updateCharacterPosition = (character: Character, movement: Movement) => {
-  let characterPosition = character[`offset${movement.direction.charAt(0).toUpperCase()}${movement.direction.slice(1)}`];
+  let characterPosition = character.offsetLeft;
   character.style[movement.direction] = `${characterPosition + movement.value}px`;
 }
 
@@ -173,7 +185,12 @@ const moveHero = (movement: Movement) => {
 }
 
 const heroHits = () => {
-  
 
-
+   for(let i=0; i < opponentsOnScreen.opponents.length; i++){
+     let opponent = opponentsOnScreen.opponents[i]; 
+    if(opponent.element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth){
+      opponent.element.remove();
+      opponentsOnScreen.removeOpponentAtIndex(0);
+    }
+   }
 }

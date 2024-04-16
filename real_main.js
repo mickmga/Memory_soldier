@@ -45,10 +45,16 @@ var OpponentsOnScreen = /** @class */ (function () {
 }());
 var LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2);
 var RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2);
+var ELEMENTS_REFERENCE_POINT = 'left';
+var HERO_HIT_POINT = document.getElementById("hero");
 var animateCharacterCount = 0;
 var currentHeroImgSuffix = 0;
 var hero = document.getElementById("hero");
 var heroImg = document.getElementById("heroImg");
+var opponentsOnScreen;
+var initOpponentsOnScreen = function () {
+    opponentsOnScreen = new OpponentsOnScreen();
+};
 var createOpponentElement = function () {
     var element = document.createElement("div");
     element.classList.add("opponent");
@@ -58,13 +64,14 @@ var setKeyPressListener = function () {
     // Function to execute when space key is pressed
     var handleSpaceKeyPress = function (event) {
         if (event.key === " ") {
-            alert("opponent killed!");
+            heroHits();
         }
     };
     // Attach event listener to the document
     document.addEventListener("keydown", handleSpaceKeyPress);
 };
 window.onload = function () {
+    initOpponentsOnScreen();
     setKeyPressListener();
     buildInjectAndlaunchNextOpponent();
     animateCharacter();
@@ -90,6 +97,7 @@ var getNextOpponent = function () {
 };
 var injectOpponent = function (opponent) {
     document.body.append(opponent.element);
+    opponentsOnScreen.addOpponent(opponent);
 };
 var getNextOpponentData = function () {
     return "data";
@@ -127,4 +135,17 @@ var moveHero = function (movement) {
     }
     updateCharacterPosition(hero, movement);
     requestAnimationFrame(function () { return moveHero(movement); });
+};
+var heroHits = function () {
+    for (var i = 0; i < opponentsOnScreen.opponents.length; i++) {
+        var opponent = opponentsOnScreen.opponents[i];
+        if (opponent.element[getLeftOrRightOffset()] < HERO_HIT_POINT[getLeftOrRightOffset()] + HERO_HIT_POINT.offsetWidth) {
+            alert("opponent killed!");
+            opponent.element.remove();
+            opponentsOnScreen.removeOpponentAtIndex(0);
+        }
+    }
+};
+var getLeftOrRightOffset = function () {
+    return "offset".concat(ELEMENTS_REFERENCE_POINT.charAt(0).toUpperCase()).concat(ELEMENTS_REFERENCE_POINT.slice(1));
 };

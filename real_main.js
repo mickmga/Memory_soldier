@@ -17,7 +17,8 @@ var Movement = /** @class */ (function () {
     }
     return Movement;
 }());
-var leftToRightMovement = new Movement(DIRECTIONS.LEFT, 2);
+var LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2);
+var RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2);
 var animateCharacterCount = 0;
 var currentHeroImgSuffix = 0;
 var hero = document.getElementById("hero");
@@ -30,7 +31,7 @@ var createOpponentElement = function () {
 window.onload = function () {
     buildInjectAndlaunchNextOpponent();
     animateCharacter();
-    moveHero(leftToRightMovement);
+    moveHero(LEFT_TO_RIGHT_MOVEMENT);
 };
 var buildInjectAndlaunchNextOpponent = function () {
     //build
@@ -57,6 +58,8 @@ var getNextOpponentData = function () {
     return "data";
 };
 var triggerOpponentMovement = function (opponent) {
+    updateCharacterPosition(opponent.element, RIGHT_TO_LEFT_MOVEMENT);
+    requestAnimationFrame(function () { return triggerOpponentMovement(opponent); });
 };
 var buildOpponent = function (data) {
     return new Opponent(data);
@@ -82,7 +85,7 @@ var updateCharacterPosition = function (character, movement) {
     character.style[movement.direction] = "".concat(characterPosition + movement.value, "px");
 };
 var moveHero = function (movement) {
-    if (hero.offsetLeft >= window.innerWidth / 2) {
+    if (hero.offsetLeft >= window.innerWidth / 2 || hero.offsetLeft <= 0) {
         movement.value *= -1;
     }
     updateCharacterPosition(hero, movement);

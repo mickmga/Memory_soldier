@@ -9,6 +9,7 @@ class Opponent {
      this.element = createOpponentElement();
    }
 }
+
 enum DIRECTIONS {
   LEFT="left" ,
   RIGHT="right" 
@@ -26,7 +27,9 @@ class Movement {
 
 type Character = HTMLElement;
 
-const leftToRightMovement = new Movement(DIRECTIONS.LEFT, 2 )
+
+const LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2 );
+const RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2 );
 
 var animateCharacterCount = 0;
 var currentHeroImgSuffix = 0;
@@ -45,7 +48,7 @@ const createOpponentElement = () => {
 window.onload = () => {
   buildInjectAndlaunchNextOpponent();
   animateCharacter();
-  moveHero(leftToRightMovement);
+  moveHero(LEFT_TO_RIGHT_MOVEMENT);
 }
 
 const buildInjectAndlaunchNextOpponent = () => { 
@@ -80,7 +83,9 @@ const getNextOpponentData = (): string => {
 }
 
 const triggerOpponentMovement = (opponent: Opponent) => {
-  
+  updateCharacterPosition(opponent.element, RIGHT_TO_LEFT_MOVEMENT);
+
+  requestAnimationFrame(() => triggerOpponentMovement(opponent));
 }
 
 const buildOpponent = (data: string) => {
@@ -106,7 +111,6 @@ const animateCharacter = () => {
   heroImg.src = `assets/hero/hero${currentHeroImgSuffix}.png`;
 
   requestAnimationFrame(animateCharacter);
-
 }
 
 const updateCharacterPosition = (character: Character, movement: Movement) => {
@@ -116,7 +120,7 @@ const updateCharacterPosition = (character: Character, movement: Movement) => {
 
 const moveHero = (movement: Movement) => {
 
-  if(hero.offsetLeft >= window.innerWidth/2){
+  if(hero.offsetLeft >= window.innerWidth/2 || hero.offsetLeft <= 0){
     movement.value*=-1
   }
 

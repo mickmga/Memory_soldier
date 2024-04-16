@@ -29,7 +29,7 @@ class OpponentsOnScreen {
   opponents: Opponent[];
 
   constructor() {
-      this.opponents = [];
+    this.opponents = [];
   }
 
   addOpponent(opponent: Opponent) {
@@ -73,8 +73,23 @@ const createOpponentElement = () => {
   return element;
 }
 
+const setKeyPressListener = () => {
+  
+// Function to execute when space key is pressed
+const handleSpaceKeyPress = (event: KeyboardEvent) => {
+  if (event.key === " ") {
+      alert("opponent killed!")
+  }
+}
+
+// Attach event listener to the document
+document.addEventListener("keydown", handleSpaceKeyPress);
+
+}
+
 
 window.onload = () => {
+  setKeyPressListener();
   buildInjectAndlaunchNextOpponent();
   animateCharacter();
   moveHero(LEFT_TO_RIGHT_MOVEMENT);
@@ -155,6 +170,10 @@ const moveHero = (movement: Movement) => {
   updateCharacterPosition(hero, movement);
 
   requestAnimationFrame(() => moveHero(movement));
-
 }
 
+const heroHits = () => {
+  
+
+
+}

@@ -17,6 +17,32 @@ var Movement = /** @class */ (function () {
     }
     return Movement;
 }());
+var OpponentsOnScreen = /** @class */ (function () {
+    function OpponentsOnScreen() {
+        this.opponents = [];
+    }
+    OpponentsOnScreen.prototype.addOpponent = function (opponent) {
+        this.opponents.push(opponent);
+    };
+    OpponentsOnScreen.prototype.removeOpponentAtIndex = function (index) {
+        if (index >= 0 && index < this.opponents.length) {
+            this.opponents.splice(index, 1);
+        }
+        else {
+            console.error("Invalid index provided for removing opponent.");
+        }
+    };
+    OpponentsOnScreen.prototype.getOpponentAtIndex = function (index) {
+        if (index >= 0 && index < this.opponents.length) {
+            return this.opponents[index];
+        }
+        else {
+            console.error("Invalid index provided for getting opponent.");
+            return undefined;
+        }
+    };
+    return OpponentsOnScreen;
+}());
 var LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2);
 var RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2);
 var animateCharacterCount = 0;
@@ -28,7 +54,18 @@ var createOpponentElement = function () {
     element.classList.add("opponent");
     return element;
 };
+var setKeyPressListener = function () {
+    // Function to execute when space key is pressed
+    var handleSpaceKeyPress = function (event) {
+        if (event.key === " ") {
+            alert("opponent killed!");
+        }
+    };
+    // Attach event listener to the document
+    document.addEventListener("keydown", handleSpaceKeyPress);
+};
 window.onload = function () {
+    setKeyPressListener();
     buildInjectAndlaunchNextOpponent();
     animateCharacter();
     moveHero(LEFT_TO_RIGHT_MOVEMENT);

@@ -1,13 +1,15 @@
 type OpponentData = string;
 
 class Opponent {
-   data: OpponentData;
-   element: HTMLElement;
+  data: OpponentData;
+  element: HTMLElement;
+  index: number;
 
-   constructor(data: OpponentData){
-     this.data = data;
-     this.element = createOpponentElement();
-   }
+  constructor(data: OpponentData, index: number) {
+      this.data = data;
+      this.element = createOpponentElement();
+      this.index = index;
+  }
 }
 
 enum DIRECTIONS {
@@ -25,22 +27,23 @@ class Movement {
   }
 }
 
+
 class OpponentsOnScreen {
   opponents: Opponent[];
 
   constructor() {
-    this.opponents = [];
+      this.opponents = [];
   }
 
   addOpponent(opponent: Opponent) {
       this.opponents.push(opponent);
   }
 
-  removeOpponentAtIndex(index: number) {
-      if (index >= 0 && index < this.opponents.length) {
+  removeOpponent(opponent: Opponent) {
+      const index = this.opponents.indexOf(opponent);
+      if (index !== -1) {
           this.opponents.splice(index, 1);
-      } else {
-          console.error("Invalid index provided for removing opponent.");
+          opponent.element.remove();
       }
   }
 
@@ -53,6 +56,7 @@ class OpponentsOnScreen {
       }
   }
 }
+
 
 type Character = HTMLElement;
 
@@ -71,6 +75,21 @@ var hero =  document.getElementById("hero")!!;
 var heroImg = document.getElementById("heroImg") as HTMLImageElement;
 
 var opponentsOnScreen: OpponentsOnScreen;
+
+let animationPrePaused = false;
+let animationPaused = false;
+
+const pauseAnimation = () => {
+   animateCharacterCount=0;
+   animationPrePaused = true;
+};
+
+const resumeAnimation = () => {
+   animationPrePaused = false;
+   animationPaused = false;
+   animateCharacter(heroImg);
+   moveHero(LEFT_TO_RIGHT_MOVEMENT);
+};
 
 const initOpponentsOnScreen = () => {
   opponentsOnScreen = new OpponentsOnScreen();
@@ -102,7 +121,7 @@ window.onload = () => {
   initOpponentsOnScreen();
   setKeyPressListener();
   buildInjectAndlaunchNextOpponent();
-  animateCharacter();
+  animateCharacter(heroImg);
   moveHero(LEFT_TO_RIGHT_MOVEMENT);
 }
 
@@ -140,19 +159,30 @@ const getNextOpponentData = (): string => {
 const triggerOpponentMovement = (opponent: Opponent) => {
   updateCharacterPosition(opponent.element, RIGHT_TO_LEFT_MOVEMENT);
 
+  if (opponent.element.offsetLeft <= 0) {
+    opponentsOnScreen.removeOpponent(opponent);
+    return; // Stop the animation if opponent is removed
+}
+
   requestAnimationFrame(() => triggerOpponentMovement(opponent));
 }
 
 const buildOpponent = (data: string) => {
-  return new Opponent(data);
+  return new Opponent(data, opponentsOnScreen.opponents.length - 1);
  }
 
  
-const animateCharacter = () => {
+const animateCharacter = (character: Character) => {
+
+  if(animationPrePaused){
+    animationPaused=true;
+    return;
+  }
+
   if(animateCharacterCount < 15){
-   animateCharacterCount++;
-   requestAnimationFrame(animateCharacter);
-   return;
+    animateCharacterCount++;
+    requestAnimationFrame(() => animateCharacter(character));
+    return;
   }
 
   animateCharacterCount=0;
@@ -165,7 +195,7 @@ const animateCharacter = () => {
 
   heroImg.src = `assets/hero/hero${currentHeroImgSuffix}.png`;
 
-  requestAnimationFrame(animateCharacter);
+  requestAnimationFrame(() => animateCharacter(character));
 }
 
 const updateCharacterPosition = (character: Character, movement: Movement) => {
@@ -174,6 +204,12 @@ const updateCharacterPosition = (character: Character, movement: Movement) => {
 }
 
 const moveHero = (movement: Movement) => {
+
+  
+  if(animationPrePaused){
+    animationPaused=true;
+    return;
+  }
 
   if(hero.offsetLeft >= window.innerWidth/2 || hero.offsetLeft <= 0){
     movement.value*=-1
@@ -186,11 +222,42 @@ const moveHero = (movement: Movement) => {
 
 const heroHits = () => {
 
+  attackAnimation();
+
    for(let i=0; i < opponentsOnScreen.opponents.length; i++){
      let opponent = opponentsOnScreen.opponents[i]; 
     if(opponent.element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth){
-      opponent.element.remove();
-      opponentsOnScreen.removeOpponentAtIndex(0);
+      opponentsOnScreen.removeOpponent(opponent); // Clear opponent from the list and DOM
+      i--; // Adjust index after removing opponent
     }
    }
+}
+
+const attackAnimation = () => {
+  let attackFrame = 1;
+  pauseAnimation();
+
+  const animateAttack = () => {
+     if (attackFrame <= 4) {
+        heroImg.src = `assets/hero/hero_attack_${attackFrame}.png`;
+        attackFrame++;
+        setTimeout(animateAttack, 200); // Adjust the time according to your animation speed
+     } else {
+      resumeAnimation();
+    }
+  }
+
+  animateAttack();
+}
+
+let spawnInterval: number = 500; // Variable to store the interval ID
+
+const startSpawningOpponents = (spawnRate: number) => {
+    spawnInterval = setInterval(() => {
+        launchNextOpponent();
+    }, spawnRate);
+}
+
+const stopSpawningOpponents = () => {
+    clearInterval(spawnInterval);
 }

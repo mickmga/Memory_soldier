@@ -30,10 +30,12 @@ body {
 .opponent {
     height: 10vh;
     aspect-ratio: 1/1;
-    background: blue;
     position: absolute;
-    top: 50vh;
-    left: 45vw;
+    top: 45.5vh;
+    left: 90vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #data {

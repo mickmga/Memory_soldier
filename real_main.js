@@ -133,6 +133,8 @@ var opponentsOnScreen;
 var animationPrePaused = false;
 var animationPaused = false;
 var additionalCameraSpeed = 0;
+var wrongOpponentsCollisions = 0;
+var wrongOpponentsKilled = 0;
 var reduxStore;
 var pauseAnimation = function () {
     animateCharacterCount = 0;
@@ -191,7 +193,7 @@ var getNextOpponent = function () {
     return opponent;
 };
 var injectOpponent = function (opponent) {
-    dataContainer.innerHTML = opponent.data;
+    dataContainer.innerHTML = opponent.data.value;
     document.body.append(opponent.element);
     opponentsOnScreen.addOpponent(opponent);
 };
@@ -236,6 +238,13 @@ var updateCharacterPosition = function (character, movement) {
     var characterPosition = character.offsetLeft;
     character.style[movement.direction] = "".concat(characterPosition + movement.value, "px");
 };
+var addOpponentCollision = function () {
+    wrongOpponentsCollisions++;
+    alert("wrong opponent collision!");
+};
+var wrongOpponentCollided = function () {
+    addOpponentCollision();
+};
 var moveHero = function (movement) {
     if (animationPrePaused) {
         animationPaused = true;
@@ -252,17 +261,24 @@ var moveHero = function (movement) {
     updateCharacterPosition(hero, movement);
     for (var i = 0; i < opponentsOnScreen.opponents.length; i++) {
         var opponent = opponentsOnScreen.opponents[i];
-        if (opponent.element.offsetLeft < hero.offsetLeft) {
-            alert("you collided with an opponent");
+        if (opponent.element.offsetLeft < hero.offsetLeft && opponent.data.answerType === ANSWER_TYPE.RIGHT) {
+            wrongOpponentCollided();
         }
     }
     requestAnimationFrame(function () { return moveHero(movement); });
+};
+var wrongOpponentKilled = function () {
+    alert("you killed a wrong opponent!");
+    wrongOpponentsKilled++;
 };
 var heroHits = function () {
     attackAnimation();
     for (var i = 0; i < opponentsOnScreen.opponents.length; i++) {
         var opponent = opponentsOnScreen.opponents[i];
         if (opponent.element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth) {
+            if (opponent.data.answerType === ANSWER_TYPE.WRONG) {
+                wrongOpponentKilled();
+            }
             opponentsOnScreen.removeOpponent(opponent);
             i--;
             setTimeout(buildInjectAndlaunchNextOpponent, 3000);
@@ -291,7 +307,7 @@ var pickRandomAnswer = function (theme, levelOver) {
     var pickFromPool = function () {
         if (pool.length > 0) {
             var randomIndex = Math.floor(Math.random() * pool.length);
-            var pickedAnswer = pool.splice(randomIndex, 1)[0].value;
+            var pickedAnswer = pool.splice(randomIndex, 1)[0];
             return pickedAnswer;
         }
         else if (otherPool.length > 0) {

@@ -1,4 +1,4 @@
-type OpponentData = string;
+type OpponentData = Answer;
 
 class Opponent {
   data: OpponentData;
@@ -184,6 +184,11 @@ var animationPaused = false;
 
 var additionalCameraSpeed = 0;
 
+var wrongOpponentsCollisions = 0;
+
+var wrongOpponentsKilled = 0;
+
+
 var reduxStore: ReduxStore;
 
 const pauseAnimation = () => {
@@ -260,12 +265,12 @@ const getNextOpponent = () => {
 }
 
 const injectOpponent = (opponent: Opponent) => {
-   dataContainer.innerHTML = opponent.data;
+   dataContainer.innerHTML = opponent.data.value;
    document.body.append(opponent.element);
    opponentsOnScreen.addOpponent(opponent);
 }
 
-const getNextOpponentData = (): string => {
+const getNextOpponentData = (): any => {
   const theme = reduxStore.inGameTheme;
 
   return pickRandomAnswer(theme, () => {
@@ -285,7 +290,7 @@ const triggerOpponentMovement = (opponent: Opponent) => {
   requestAnimationFrame(() => triggerOpponentMovement(opponent));
 }
 
-const buildOpponent = (data: string) => {
+const buildOpponent = (data: Answer) => {
   return new Opponent(data, opponentsOnScreen.opponents.length - 1);
  }
 
@@ -322,6 +327,18 @@ const updateCharacterPosition = (character: Character, movement: Movement) => {
   character.style[movement.direction] = `${characterPosition + movement.value}px`;
 }
 
+
+const addOpponentCollision = () => {
+   wrongOpponentsCollisions++;
+   alert("wrong opponent collision!");
+}
+
+
+const wrongOpponentCollided = () => {
+  addOpponentCollision();
+}
+
+
 const moveHero = (movement: Movement) => {
 
   if(animationPrePaused){
@@ -343,12 +360,17 @@ const moveHero = (movement: Movement) => {
 
   for(let i=0; i < opponentsOnScreen.opponents.length; i++){
     let opponent = opponentsOnScreen.opponents[i]; 
-   if(opponent.element.offsetLeft < hero.offsetLeft){
-      alert("you collided with an opponent");
+   if(opponent.element.offsetLeft < hero.offsetLeft && opponent.data.answerType === ANSWER_TYPE.RIGHT){
+     wrongOpponentCollided();
    }
   }
-
   requestAnimationFrame(() => moveHero(movement));
+}
+
+const wrongOpponentKilled = () => {
+  alert("you killed a wrong opponent!");
+  wrongOpponentsKilled++;
+   
 }
 
 const heroHits = () => {
@@ -358,6 +380,11 @@ const heroHits = () => {
    for(let i=0; i < opponentsOnScreen.opponents.length; i++){
      let opponent = opponentsOnScreen.opponents[i]; 
     if(opponent.element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth){
+
+      if(opponent.data.answerType === ANSWER_TYPE.WRONG){
+          wrongOpponentKilled();
+      }
+
       opponentsOnScreen.removeOpponent(opponent); 
       i--;
       setTimeout(buildInjectAndlaunchNextOpponent, 3000);
@@ -393,7 +420,7 @@ const pickRandomAnswer = (theme: Theme, levelOver: () => void): any => {
   const pickFromPool = () => { 
     if (pool.length > 0) {
       const randomIndex = Math.floor(Math.random() * pool.length);
-      const pickedAnswer = pool.splice(randomIndex, 1)[0].value; 
+      const pickedAnswer = pool.splice(randomIndex, 1)[0]; 
       return pickedAnswer;
     } else if (otherPool.length > 0) {
       return pickRandomAnswer(theme, levelOver);

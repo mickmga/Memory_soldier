@@ -84,6 +84,25 @@ var OpponentsOnScreen = /** @class */ (function () {
     };
     return OpponentsOnScreen;
 }());
+var ANSWER_TYPE;
+(function (ANSWER_TYPE) {
+    ANSWER_TYPE[ANSWER_TYPE["RIGHT"] = 0] = "RIGHT";
+    ANSWER_TYPE[ANSWER_TYPE["WRONG"] = 1] = "WRONG";
+})(ANSWER_TYPE || (ANSWER_TYPE = {}));
+var RightAnswer = /** @class */ (function () {
+    function RightAnswer(value) {
+        this.value = value;
+        this.answerType = ANSWER_TYPE.RIGHT;
+    }
+    return RightAnswer;
+}());
+var WrongAnswer = /** @class */ (function () {
+    function WrongAnswer(value) {
+        this.value = value;
+        this.answerType = ANSWER_TYPE.WRONG;
+    }
+    return WrongAnswer;
+}());
 var Theme = /** @class */ (function () {
     function Theme(name, goodAnswers, badAnswers) {
         this.name = name;
@@ -152,8 +171,8 @@ window.onload = function () {
     moveHero(LEFT_TO_RIGHT_MOVEMENT);
 };
 var getCapitalsTheme = function () {
-    var goodAnswers = ["Paris", "London"];
-    var badAnswers = ["Monaco", "Chicago"];
+    var goodAnswers = [new RightAnswer("Paris"), new RightAnswer("London")];
+    var badAnswers = [new WrongAnswer("Chicago"), new RightAnswer("Monaco")];
     return new Theme("capitals", goodAnswers, badAnswers);
 };
 var buildInjectAndlaunchNextOpponent = function () {
@@ -162,7 +181,7 @@ var buildInjectAndlaunchNextOpponent = function () {
     //inject
     injectOpponent(opponent);
     //launch
-    opponent.animate(9, 500); // 9 frames, 100ms interval between frames
+    opponent.animate(9, 500);
     triggerOpponentMovement(opponent);
 };
 var getNextOpponent = function () {
@@ -179,14 +198,14 @@ var injectOpponent = function (opponent) {
 var getNextOpponentData = function () {
     var theme = reduxStore.inGameTheme;
     return pickRandomAnswer(theme, function () {
-        alert("Level over!"); // You might want to handle level completion here
+        alert("Level over!");
     });
 };
 var triggerOpponentMovement = function (opponent) {
     updateCharacterPosition(opponent.element, new Movement(DIRECTIONS.LEFT, -2 - additionalCameraSpeed));
     if (opponent.element.offsetLeft <= 0) {
         opponentsOnScreen.removeOpponent(opponent);
-        return; // Stop the animation if opponent is removed
+        return;
     }
     requestAnimationFrame(function () { return triggerOpponentMovement(opponent); });
 };
@@ -196,7 +215,6 @@ var buildOpponent = function (data) {
 var animateCharacter = function (character) {
     if (animationPrePaused) {
         animationPaused = true;
-        console.log("returning");
         return;
     }
     if (animateCharacterCount < 15) {
@@ -232,6 +250,12 @@ var moveHero = function (movement) {
         additionalCameraSpeed = 0;
     }
     updateCharacterPosition(hero, movement);
+    for (var i = 0; i < opponentsOnScreen.opponents.length; i++) {
+        var opponent = opponentsOnScreen.opponents[i];
+        if (opponent.element.offsetLeft < hero.offsetLeft) {
+            alert("you collided with an opponent");
+        }
+    }
     requestAnimationFrame(function () { return moveHero(movement); });
 };
 var heroHits = function () {
@@ -267,7 +291,7 @@ var pickRandomAnswer = function (theme, levelOver) {
     var pickFromPool = function () {
         if (pool.length > 0) {
             var randomIndex = Math.floor(Math.random() * pool.length);
-            var pickedAnswer = pool.splice(randomIndex, 1)[0];
+            var pickedAnswer = pool.splice(randomIndex, 1)[0].value;
             return pickedAnswer;
         }
         else if (otherPool.length > 0) {

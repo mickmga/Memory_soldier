@@ -294,7 +294,6 @@ const animateCharacter = (character: Character) => {
 
   if(animationPrePaused){
     animationPaused=true;
-    console.log("returning")
     return;
   }
 
@@ -342,6 +341,13 @@ const moveHero = (movement: Movement) => {
 
   updateCharacterPosition(hero, movement);
 
+  for(let i=0; i < opponentsOnScreen.opponents.length; i++){
+    let opponent = opponentsOnScreen.opponents[i]; 
+   if(opponent.element.offsetLeft < hero.offsetLeft){
+      alert("you collided with an opponent");
+   }
+  }
+
   requestAnimationFrame(() => moveHero(movement));
 }
 
@@ -387,7 +393,7 @@ const pickRandomAnswer = (theme: Theme, levelOver: () => void): any => {
   const pickFromPool = () => { 
     if (pool.length > 0) {
       const randomIndex = Math.floor(Math.random() * pool.length);
-      const pickedAnswer = pool.splice(randomIndex, 1)[0]; 
+      const pickedAnswer = pool.splice(randomIndex, 1)[0].value; 
       return pickedAnswer;
     } else if (otherPool.length > 0) {
       return pickRandomAnswer(theme, levelOver);

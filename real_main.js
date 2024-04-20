@@ -1,3 +1,12 @@
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var Opponent = /** @class */ (function () {
     function Opponent(data, index) {
         this.animationTimeout = null; // Store timeout ID
@@ -13,7 +22,6 @@ var Opponent = /** @class */ (function () {
         var currentFrame = frames;
         var animateOpponentCount = 0;
         var animateOpponent = function () {
-            console.log("animating");
             if (animateOpponentCount < 5) {
                 animateOpponentCount++;
                 requestAnimationFrame(animateOpponent);
@@ -33,8 +41,8 @@ var Opponent = /** @class */ (function () {
     };
     Opponent.prototype.clearTimeout = function () {
         if (this.animationTimeout) {
-            clearTimeout(this.animationTimeout); // Clear the timeout when opponent is removed
-            this.animationTimeout = null; // Reset the timeout variable
+            clearTimeout(this.animationTimeout);
+            this.animationTimeout = null;
         }
     };
     return Opponent;
@@ -76,6 +84,23 @@ var OpponentsOnScreen = /** @class */ (function () {
     };
     return OpponentsOnScreen;
 }());
+var Theme = /** @class */ (function () {
+    function Theme(name, goodAnswers, badAnswers) {
+        this.name = name;
+        this.goodAnswers = goodAnswers;
+        this.badAnswers = badAnswers;
+    }
+    return Theme;
+}());
+var ReduxStore = /** @class */ (function () {
+    function ReduxStore() {
+        this.themes = [];
+        this.inGameTheme = getCapitalsTheme();
+    }
+    return ReduxStore;
+}());
+var collectThemes = function () {
+};
 var LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2);
 var RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2);
 var ELEMENTS_REFERENCE_POINT = 'left';
@@ -84,10 +109,12 @@ var animateCharacterCount = 0;
 var currentHeroImgSuffix = 0;
 var hero = document.getElementById("hero");
 var heroImg = document.getElementById("heroImg");
+var dataContainer = document.getElementById("data");
 var opponentsOnScreen;
 var animationPrePaused = false;
 var animationPaused = false;
 var additionalCameraSpeed = 0;
+var reduxStore;
 var pauseAnimation = function () {
     animateCharacterCount = 0;
     animationPrePaused = true;
@@ -117,11 +144,17 @@ var setKeyPressListener = function () {
     document.addEventListener("keydown", handleSpaceKeyPress);
 };
 window.onload = function () {
+    reduxStore = new ReduxStore();
     initOpponentsOnScreen();
     setKeyPressListener();
     buildInjectAndlaunchNextOpponent();
     animateCharacter(heroImg);
     moveHero(LEFT_TO_RIGHT_MOVEMENT);
+};
+var getCapitalsTheme = function () {
+    var goodAnswers = ["Paris", "London"];
+    var badAnswers = ["Monaco", "Chicago"];
+    return new Theme("capitals", goodAnswers, badAnswers);
 };
 var buildInjectAndlaunchNextOpponent = function () {
     //build
@@ -139,11 +172,15 @@ var getNextOpponent = function () {
     return opponent;
 };
 var injectOpponent = function (opponent) {
+    dataContainer.innerHTML = opponent.data;
     document.body.append(opponent.element);
     opponentsOnScreen.addOpponent(opponent);
 };
 var getNextOpponentData = function () {
-    return "data";
+    var theme = reduxStore.inGameTheme;
+    return pickRandomAnswer(theme, function () {
+        alert("Level over!"); // You might want to handle level completion here
+    });
 };
 var triggerOpponentMovement = function (opponent) {
     updateCharacterPosition(opponent.element, new Movement(DIRECTIONS.LEFT, -2 - additionalCameraSpeed));
@@ -202,8 +239,8 @@ var heroHits = function () {
     for (var i = 0; i < opponentsOnScreen.opponents.length; i++) {
         var opponent = opponentsOnScreen.opponents[i];
         if (opponent.element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth) {
-            opponentsOnScreen.removeOpponent(opponent); // Clear opponent from the list and DOM
-            i--; // Adjust index after removing opponent
+            opponentsOnScreen.removeOpponent(opponent);
+            i--;
             setTimeout(buildInjectAndlaunchNextOpponent, 3000);
         }
     }
@@ -222,4 +259,24 @@ var attackAnimation = function () {
         }
     };
     animateAttack();
+};
+var pickRandomAnswer = function (theme, levelOver) {
+    var randomValue = Math.random();
+    var pool = randomValue < 0.5 ? __spreadArray([], theme.goodAnswers, true) : __spreadArray([], theme.badAnswers, true);
+    var otherPool = randomValue < 0.5 ? __spreadArray([], theme.badAnswers, true) : __spreadArray([], theme.goodAnswers, true);
+    var pickFromPool = function () {
+        if (pool.length > 0) {
+            var randomIndex = Math.floor(Math.random() * pool.length);
+            var pickedAnswer = pool.splice(randomIndex, 1)[0];
+            return pickedAnswer;
+        }
+        else if (otherPool.length > 0) {
+            return pickRandomAnswer(theme, levelOver);
+        }
+        else {
+            levelOver();
+            return null;
+        }
+    };
+    return pickFromPool();
 };

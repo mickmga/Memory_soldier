@@ -26,8 +26,6 @@ class Opponent {
 
     const animateOpponent = () => {
 
-      console.log("animating")
-
       if(animateOpponentCount < 5){
         animateOpponentCount++;
         requestAnimationFrame(animateOpponent);
@@ -52,8 +50,8 @@ class Opponent {
 
   clearTimeout() {
     if (this.animationTimeout) {
-      clearTimeout(this.animationTimeout); // Clear the timeout when opponent is removed
-      this.animationTimeout = null; // Reset the timeout variable
+      clearTimeout(this.animationTimeout); 
+      this.animationTimeout = null; 
     }
   }
 }
@@ -106,7 +104,35 @@ class OpponentsOnScreen {
 
 type Character = HTMLElement;
 
-type Answer = string;
+enum ANSWER_TYPE {
+  RIGHT,
+  WRONG
+}
+interface Answer {
+  value:string;
+  answerType:ANSWER_TYPE;
+}
+
+class RightAnswer implements Answer{
+  value:string;
+  answerType:ANSWER_TYPE;
+
+  constructor(value: string){
+    this.value = value;
+    this.answerType = ANSWER_TYPE.RIGHT;
+  }
+}
+
+class WrongAnswer implements Answer{
+  value:string;
+  answerType:ANSWER_TYPE;
+
+  constructor(value: string){
+    this.value = value;
+    this.answerType = ANSWER_TYPE.WRONG;
+  }
+}
+
 
 class Theme {
   name: string;
@@ -123,6 +149,11 @@ class Theme {
 class ReduxStore {
   themes: Array<Theme>;
   inGameTheme: Theme;
+
+  constructor(){
+    this.themes = [];
+    this.inGameTheme = getCapitalsTheme();
+  }
 }
 
 const collectThemes = () => {
@@ -144,6 +175,8 @@ var currentHeroImgSuffix = 0;
 var hero =  document.getElementById("hero")!!;
 var heroImg = document.getElementById("heroImg") as HTMLImageElement;
 
+var dataContainer = document.getElementById("data")!!;
+
 var opponentsOnScreen: OpponentsOnScreen;
 
 var animationPrePaused = false;
@@ -151,7 +184,7 @@ var animationPaused = false;
 
 var additionalCameraSpeed = 0;
 
-var reduxStore = new ReduxStore();
+var reduxStore: ReduxStore;
 
 const pauseAnimation = () => {
    animateCharacterCount=0;
@@ -192,21 +225,19 @@ document.addEventListener("keydown", handleSpaceKeyPress);
 
 
 window.onload = () => {
+  reduxStore = new ReduxStore();
+
   initOpponentsOnScreen();
   setKeyPressListener();
   buildInjectAndlaunchNextOpponent();
   animateCharacter(heroImg);
   moveHero(LEFT_TO_RIGHT_MOVEMENT);
-
-  reduxStore.themes.push(getCapitalsTheme());
-  reduxStore.inGameTheme = Object.create(Object.getPrototypeOf(this.themes[0]));
-
 }
 
 const getCapitalsTheme = () => {
 
-  let goodAnswers = ["Paris", "London"];
-  let badAnswers = ["Monaco", "Chicago"];
+  let goodAnswers = [new RightAnswer("Paris"), new RightAnswer("London")];
+  let badAnswers = [new WrongAnswer("Chicago"), new RightAnswer("Monaco")];
 
   return new Theme("capitals", goodAnswers, badAnswers);
 }
@@ -217,7 +248,7 @@ const buildInjectAndlaunchNextOpponent = () => {
   //inject
   injectOpponent(opponent);
   //launch
-  opponent.animate(9, 500); // 9 frames, 100ms interval between frames
+  opponent.animate(9, 500);
   triggerOpponentMovement(opponent);
 }
 
@@ -229,13 +260,18 @@ const getNextOpponent = () => {
 }
 
 const injectOpponent = (opponent: Opponent) => {
+   dataContainer.innerHTML = opponent.data;
    document.body.append(opponent.element);
    opponentsOnScreen.addOpponent(opponent);
 }
 
 const getNextOpponentData = (): string => {
-  return "data";
-}
+  const theme = reduxStore.inGameTheme;
+
+  return pickRandomAnswer(theme, () => {
+    alert("Level over!");
+  });
+};
 
 const triggerOpponentMovement = (opponent: Opponent) => {
 
@@ -243,7 +279,7 @@ const triggerOpponentMovement = (opponent: Opponent) => {
 
   if (opponent.element.offsetLeft <= 0) {
     opponentsOnScreen.removeOpponent(opponent);
-    return; // Stop the animation if opponent is removed
+    return;
 }
 
   requestAnimationFrame(() => triggerOpponentMovement(opponent));
@@ -316,8 +352,8 @@ const heroHits = () => {
    for(let i=0; i < opponentsOnScreen.opponents.length; i++){
      let opponent = opponentsOnScreen.opponents[i]; 
     if(opponent.element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth){
-      opponentsOnScreen.removeOpponent(opponent); // Clear opponent from the list and DOM
-      i--; // Adjust index after removing opponent
+      opponentsOnScreen.removeOpponent(opponent); 
+      i--;
       setTimeout(buildInjectAndlaunchNextOpponent, 3000);
     }
    }
@@ -342,35 +378,23 @@ const attackAnimation = () => {
 
 
 
-
 const pickRandomAnswer = (theme: Theme, levelOver: () => void): any => {
-  const randomValue = Math.random(); // Random value between 0 and 1
+  const randomValue = Math.random();
 
-  let pool: any[];
-  let otherPool: any[];
+  const pool = randomValue < 0.5 ? [...theme.goodAnswers] : [...theme.badAnswers];
+  const otherPool = randomValue < 0.5 ? [...theme.badAnswers] : [...theme.goodAnswers];
 
-  if (randomValue < 0.5) {
-      pool = theme.goodAnswers;
-      otherPool = theme.badAnswers;
-  } else {
-      pool = theme.badAnswers;
-      otherPool = theme.goodAnswers;
-  }
-
-  const pickFromPool = () => {
-      if (pool.length > 0) {
-          const randomIndex = Math.floor(Math.random() * pool.length);
-          const pickedAnswer = pool.splice(randomIndex, 1)[0]; // Remove the picked answer from the pool
-          console.log("Rendered answer:", pickedAnswer);
-          return pickedAnswer;
-      } else if (otherPool.length > 0) {
-          // If current pool is empty, try picking from the other pool
-          return pickRandomAnswer(theme, levelOver);
-      } else {
-          // If both pools are empty, execute levelOver()
-          levelOver();
-          return null; // Or any other value to indicate no answer available
-      }
+  const pickFromPool = () => { 
+    if (pool.length > 0) {
+      const randomIndex = Math.floor(Math.random() * pool.length);
+      const pickedAnswer = pool.splice(randomIndex, 1)[0]; 
+      return pickedAnswer;
+    } else if (otherPool.length > 0) {
+      return pickRandomAnswer(theme, levelOver);
+    } else {
+      levelOver();
+      return null; 
+    }
   };
 
   return pickFromPool();

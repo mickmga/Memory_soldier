@@ -1,3 +1,47 @@
+
+interface UserInterface {
+   
+  games: GamesInterface;
+
+}
+
+
+interface GamesInterface {
+
+ games: Array<GameInterface>;
+
+}
+
+
+interface ScoreInterface {
+
+
+
+}
+
+
+interface GameInterface {
+
+ //rules of the game, dynamics etc...
+
+ run(){
+
+ }
+
+ score: ScoreInterface;
+   
+}
+
+
+
+
+
+
+
+
+
+
+
 type OpponentData = Answer;
 
 class Opponent {

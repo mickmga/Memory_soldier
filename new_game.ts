@@ -118,14 +118,14 @@ interface ICharacter {
   
 
 
-  class Hero implements ICharacter, ICollidable {
+  class Hero implements ICharacter {
     private animateCharacterCount: number = 0;
     private currentHeroImgSuffix: number = 0;
   
     constructor(
       private heroImg: HTMLImageElement,
       private hero: HTMLElement
-    ) {}
+    ) { }
   
     animate(): void {
       const animateCharacter = () => {
@@ -156,12 +156,14 @@ interface ICharacter {
       this.hero.style[movement.direction] = `${characterPosition + movement.value}px`;
     }
   
-    checkCollision(): boolean {
+    checkForMiddleScreenReaching(): boolean {
       return this.hero.offsetLeft >= window.innerWidth / 2;
     }
-  }
   
-
+    checkForLeftLimitReaching(): boolean {
+      return this.hero.offsetLeft <= 0;
+    }
+  }
   
   class Movement implements IMovement {
     constructor(public direction: DIRECTIONS, public value: number) {}
@@ -283,7 +285,7 @@ interface ICharacter {
     }
   
     moveHero(movement: Movement): void {
-      if (this.hero.checkCollision()) {
+      if (this.hero.checkForMiddleScreenReaching() || this.hero.checkForLeftLimitReaching()) {
         movement.value *= -1;
       }
   

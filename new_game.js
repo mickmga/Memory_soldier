@@ -119,8 +119,11 @@ var Hero = /** @class */ (function () {
         var characterPosition = this.hero.offsetLeft;
         this.hero.style[movement.direction] = "".concat(characterPosition + movement.value, "px");
     };
-    Hero.prototype.checkCollision = function () {
+    Hero.prototype.checkForMiddleScreenReaching = function () {
         return this.hero.offsetLeft >= window.innerWidth / 2;
+    };
+    Hero.prototype.checkForLeftLimitReaching = function () {
+        return this.hero.offsetLeft <= 0;
     };
     return Hero;
 }());
@@ -235,7 +238,7 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.moveHero = function (movement) {
         var _this = this;
-        if (this.hero.checkCollision()) {
+        if (this.hero.checkForMiddleScreenReaching() || this.hero.checkForLeftLimitReaching()) {
             movement.value *= -1;
         }
         this.hero.updatePosition(movement);

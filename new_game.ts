@@ -104,7 +104,7 @@ interface ICharacter {
     }
   
     updatePosition(movement: IMovement): void {
-      let position = parseInt(this._element.style.left || '0');
+      let position = this.element.offsetLeft;
       this._element.style.left = `${position + movement.value}px`;
     }
   
@@ -113,8 +113,6 @@ interface ICharacter {
     }
   }
   
-
-
   class Hero implements ICharacter {
     private animateCharacterCount: number = 0;
     private currentHeroImgSuffix: number = 0;
@@ -281,7 +279,7 @@ interface ICharacter {
         requestAnimationFrame(updateMovement);
       };
   
-     // updateMovement();
+      updateMovement();
     }
   
     moveHero(movement: Movement): void {

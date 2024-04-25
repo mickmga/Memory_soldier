@@ -77,7 +77,7 @@ var Opponent = /** @class */ (function () {
         }
     };
     Opponent.prototype.updatePosition = function (movement) {
-        var position = parseInt(this._element.style.left || '0');
+        var position = this.element.offsetLeft;
         this._element.style.left = "".concat(position + movement.value, "px");
     };
     Opponent.prototype.checkCollision = function () {
@@ -232,7 +232,7 @@ var Game = /** @class */ (function () {
             }
             requestAnimationFrame(updateMovement);
         };
-        // updateMovement();
+        updateMovement();
     };
     Game.prototype.moveHero = function (movement) {
         var _this = this;

@@ -28,14 +28,19 @@ body {
 }
 
 .opponent {
-    height: 10vh;
+    height: 20vh;
     aspect-ratio: 1/1;
     position: absolute;
-    top: 45.5vh;
+    top: 40vh;
     left: 90vw;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.opponent img {
+  height: 100%;
+  width: auto;
 }
 
 #data {

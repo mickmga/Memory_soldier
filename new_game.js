@@ -26,11 +26,13 @@ var ReduxStore = /** @class */ (function () {
     return ReduxStore;
 }());
 var Opponent = /** @class */ (function () {
-    function Opponent(_data, _element, imgElement, index) {
+    function Opponent(_data, _element, imgElement, index, movement // Change from private to public
+    ) {
         this._data = _data;
         this._element = _element;
         this.imgElement = imgElement;
         this.index = index;
+        this.movement = movement;
         this.animationTimeout = null;
         this.animateOpponentCount = 0;
         this.currentFrame = 9;
@@ -70,6 +72,9 @@ var Opponent = /** @class */ (function () {
         };
         animateOpponent();
     };
+    Opponent.prototype.resetMovement = function () {
+        // Reset opponent movement if needed
+    };
     Opponent.prototype.clearTimeout = function () {
         if (this.animationTimeout) {
             clearTimeout(this.animationTimeout);
@@ -82,6 +87,9 @@ var Opponent = /** @class */ (function () {
     };
     Opponent.prototype.checkCollision = function () {
         return this._element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth;
+    };
+    Opponent.prototype.increaseSpeed = function (increase) {
+        this.movement.value -= increase;
     };
     return Opponent;
 }());
@@ -117,7 +125,7 @@ var Hero = /** @class */ (function () {
         this.hero.style[movement.direction] = "".concat(characterPosition + movement.value, "px");
     };
     Hero.prototype.checkForMiddleScreenReaching = function () {
-        return this.hero.offsetLeft >= window.innerWidth / 2;
+        return this.hero.offsetLeft >= window.innerWidth / 3;
     };
     Hero.prototype.checkForLeftLimitReaching = function () {
         return this.hero.offsetLeft <= 0;
@@ -186,6 +194,7 @@ var Game = /** @class */ (function () {
         this.reduxStore = reduxStore;
         this.dataContainer = dataContainer;
         this.HERO_HIT_POINT = HERO_HIT_POINT;
+        this.backgroundMovement = 0;
     }
     Game.prototype.init = function () {
         this.hero = new Hero(document.getElementById("heroImg"), document.getElementById("hero"));
@@ -203,7 +212,7 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.getNextOpponent = function () {
         var data = this.getNextOpponentData();
-        return new Opponent(data, createOpponentElement(), document.createElement('img'), this.opponentsOnScreen.opponents.length - 1);
+        return new Opponent(data, createOpponentElement(), document.createElement('img'), this.opponentsOnScreen.opponents.length - 1, RIGHT_TO_LEFT_MOVEMENT);
     };
     Game.prototype.getNextOpponentData = function () {
         var theme = this.reduxStore.inGameTheme;
@@ -213,22 +222,15 @@ var Game = /** @class */ (function () {
         this.dataContainer.innerHTML = opponent.data.value;
         var opponentElement = document.createElement("div");
         opponentElement.classList.add("opponent");
-        console.log("newly built element =>");
-        console.log(opponentElement);
-        console.log("passed element =>");
-        console.log(opponent.element);
         document.body.append(opponent.element);
-        console.log("element added");
         this.opponentsOnScreen.addOpponent(opponent);
     };
     Game.prototype.triggerOpponentMovement = function (opponent) {
-        var _this = this;
-        var movement = new Movement(DIRECTIONS.LEFT, -2);
         var updateMovement = function () {
-            opponent.updatePosition(movement);
+            opponent.updatePosition(opponent.movement);
             if (opponent.checkCollision()) {
-                _this.opponentsOnScreen.removeOpponent(opponent);
-                return;
+                //this.opponentsOnScreen.removeOpponent(opponent);
+                //return;
             }
             requestAnimationFrame(updateMovement);
         };
@@ -236,8 +238,19 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.moveHero = function (movement) {
         var _this = this;
-        if (this.hero.checkForMiddleScreenReaching() || this.hero.checkForLeftLimitReaching()) {
+        if (this.hero.checkForMiddleScreenReaching()) {
             movement.value *= -1;
+            var opponentSpeedIncrease = Math.abs(movement.value) + Math.abs(this.backgroundMovement);
+            for (var _i = 0, _a = this.opponentsOnScreen.opponents; _i < _a.length; _i++) {
+                var opponent = _a[_i];
+                opponent.increaseSpeed(opponentSpeedIncrease);
+            }
+        }
+        // If hero reaches left limit, reverse the movement
+        if (this.hero.checkForLeftLimitReaching()) {
+            movement.value *= -1;
+            // Also update the background movement
+            this.backgroundMovement = movement.value;
         }
         this.hero.updatePosition(movement);
         requestAnimationFrame(function () { return _this.moveHero(movement); });
@@ -268,6 +281,7 @@ var Game = /** @class */ (function () {
     return Game;
 }());
 var LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2);
+var RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2);
 var HERO_HIT_POINT = document.getElementById("hero");
 var reduxStore = new ReduxStore();
 var dataContainer = document.getElementById("data");

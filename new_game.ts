@@ -53,7 +53,7 @@ interface ICharacter {
   class Opponent implements ICharacter, ICollidable {
     private animationTimeout: number | null = null;
     private animateOpponentCount: number = 0;
-    private currentFrame: number = 1;
+    private currentFrame: number = 9;
   
     constructor(
       private _data: IAnswer,
@@ -61,9 +61,6 @@ interface ICharacter {
       private imgElement: HTMLImageElement,
       private index: number
     ) {
-      this._element = document.createElement("div");
-      this.imgElement = document.createElement("img");
-      this.imgElement.classList.add('opponentImg');
       this._element.appendChild(this.imgElement);
     }
   
@@ -85,10 +82,10 @@ interface ICharacter {
   
         this.animateOpponentCount = 0;
   
-        if (this.currentFrame === 9) {
-          this.currentFrame = 1;
+        if (this.currentFrame === 1) {
+          this.currentFrame = 9;
         } else {
-          this.currentFrame++;
+          this.currentFrame--;
         }
   
         this.imgElement.src = `assets/opponents/wolf_run_${this.currentFrame}.png`;
@@ -254,6 +251,7 @@ interface ICharacter {
   
     injectOpponent(opponent: Opponent): void {
       this.dataContainer.innerHTML = opponent.data.value;
+
       const opponentElement = document.createElement("div");
       opponentElement.classList.add("opponent");
 
@@ -264,6 +262,8 @@ interface ICharacter {
       console.log(opponent.element);
 
       document.body.append(opponent.element);
+
+      console.log("element added");
 
       this.opponentsOnScreen.addOpponent(opponent);
     }
@@ -281,7 +281,7 @@ interface ICharacter {
         requestAnimationFrame(updateMovement);
       };
   
-      updateMovement();
+     // updateMovement();
     }
   
     moveHero(movement: Movement): void {

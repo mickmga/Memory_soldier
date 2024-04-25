@@ -33,10 +33,7 @@ var Opponent = /** @class */ (function () {
         this.index = index;
         this.animationTimeout = null;
         this.animateOpponentCount = 0;
-        this.currentFrame = 1;
-        this._element = document.createElement("div");
-        this.imgElement = document.createElement("img");
-        this.imgElement.classList.add('opponentImg');
+        this.currentFrame = 9;
         this._element.appendChild(this.imgElement);
     }
     Object.defineProperty(Opponent.prototype, "data", {
@@ -62,11 +59,11 @@ var Opponent = /** @class */ (function () {
                 return;
             }
             _this.animateOpponentCount = 0;
-            if (_this.currentFrame === 9) {
-                _this.currentFrame = 1;
+            if (_this.currentFrame === 1) {
+                _this.currentFrame = 9;
             }
             else {
-                _this.currentFrame++;
+                _this.currentFrame--;
             }
             _this.imgElement.src = "assets/opponents/wolf_run_".concat(_this.currentFrame, ".png");
             requestAnimationFrame(animateOpponent);
@@ -221,6 +218,7 @@ var Game = /** @class */ (function () {
         console.log("passed element =>");
         console.log(opponent.element);
         document.body.append(opponent.element);
+        console.log("element added");
         this.opponentsOnScreen.addOpponent(opponent);
     };
     Game.prototype.triggerOpponentMovement = function (opponent) {
@@ -234,7 +232,7 @@ var Game = /** @class */ (function () {
             }
             requestAnimationFrame(updateMovement);
         };
-        updateMovement();
+        // updateMovement();
     };
     Game.prototype.moveHero = function (movement) {
         var _this = this;

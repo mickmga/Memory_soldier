@@ -301,7 +301,7 @@ class Game {
       // Also update the background movement
       this.backgroundMovement = movement.value;
       for (const opponent of this.opponentsOnScreen.opponents) {
-        opponent.resetMovement()
+        opponent.resetMovement();
       }
     }
 

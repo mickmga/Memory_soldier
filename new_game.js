@@ -26,8 +26,8 @@ var ReduxStore = /** @class */ (function () {
     return ReduxStore;
 }());
 var Opponent = /** @class */ (function () {
-    function Opponent(_data, _element, imgElement, index, movement // Change from private to public
-    ) {
+    function Opponent(_data, _element, imgElement, index, movement) {
+        if (movement === void 0) { movement = RIGHT_TO_LEFT_MOVEMENT; }
         this._data = _data;
         this._element = _element;
         this.imgElement = imgElement;
@@ -37,6 +37,7 @@ var Opponent = /** @class */ (function () {
         this.animateOpponentCount = 0;
         this.currentFrame = 9;
         this._element.appendChild(this.imgElement);
+        this.initialMovementValue = movement.value;
     }
     Object.defineProperty(Opponent.prototype, "data", {
         get: function () {
@@ -73,7 +74,7 @@ var Opponent = /** @class */ (function () {
         animateOpponent();
     };
     Opponent.prototype.resetMovement = function () {
-        // Reset opponent movement if needed
+        this.movement.value = this.initialMovementValue;
     };
     Opponent.prototype.clearTimeout = function () {
         if (this.animationTimeout) {
@@ -251,6 +252,10 @@ var Game = /** @class */ (function () {
             movement.value *= -1;
             // Also update the background movement
             this.backgroundMovement = movement.value;
+            for (var _b = 0, _c = this.opponentsOnScreen.opponents; _b < _c.length; _b++) {
+                var opponent = _c[_b];
+                opponent.resetMovement();
+            }
         }
         this.hero.updatePosition(movement);
         requestAnimationFrame(function () { return _this.moveHero(movement); });
@@ -281,7 +286,7 @@ var Game = /** @class */ (function () {
     return Game;
 }());
 var LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2);
-var RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2);
+var RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -0.2);
 var HERO_HIT_POINT = document.getElementById("hero");
 var reduxStore = new ReduxStore();
 var dataContainer = document.getElementById("data");

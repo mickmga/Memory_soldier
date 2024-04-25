@@ -54,15 +54,17 @@ class Opponent implements ICharacter, ICollidable {
   private animationTimeout: number | null = null;
   private animateOpponentCount: number = 0;
   private currentFrame: number = 9;
+  private initialMovementValue: number;
 
   constructor(
     private _data: IAnswer,
     private _element: HTMLElement,
     private imgElement: HTMLImageElement,
     private index: number,
-    public movement: Movement // Change from private to public
+    public movement: Movement = RIGHT_TO_LEFT_MOVEMENT
   ) {
     this._element.appendChild(this.imgElement);
+    this.initialMovementValue = movement.value;
   }
 
   get data(): IAnswer {
@@ -97,8 +99,8 @@ class Opponent implements ICharacter, ICollidable {
     animateOpponent();
   }
 
-  resetMovement() {
-    // Reset opponent movement if needed
+  resetMovement(): void {
+    this.movement.value = this.initialMovementValue;
   }
 
   clearTimeout(): void {
@@ -121,6 +123,7 @@ class Opponent implements ICharacter, ICollidable {
     this.movement.value -= increase;
   }
 }
+
 
 
 class Hero implements ICharacter {
@@ -297,6 +300,9 @@ class Game {
       movement.value *= -1;
       // Also update the background movement
       this.backgroundMovement = movement.value;
+      for (const opponent of this.opponentsOnScreen.opponents) {
+        opponent.resetMovement()
+      }
     }
 
     this.hero.updatePosition(movement);

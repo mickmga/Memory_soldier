@@ -249,7 +249,6 @@ var Game = /** @class */ (function () {
         var updateMovement = function () {
             opponent.updatePosition(opponent.movement);
             if (opponent.checkCollision() && opponent.data.isCorrect()) {
-                alert("vous n avez pas tué cet adversaire!");
                 //this.opponentsOnScreen.removeOpponent(opponent);
                 //return;
             }

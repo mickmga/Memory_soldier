@@ -18,7 +18,7 @@ var ReduxStore = /** @class */ (function () {
     };
     ReduxStore.prototype.getCapitalsTheme = function () {
         var goodAnswers = [new Answer("Paris", ANSWER_TYPE.RIGHT), new Answer("London", ANSWER_TYPE.RIGHT)];
-        var badAnswers = [new Answer("Chicago", ANSWER_TYPE.WRONG), new Answer("Monaco", ANSWER_TYPE.RIGHT)];
+        var badAnswers = [new Answer("Chicago", ANSWER_TYPE.WRONG), new Answer("Monaco", ANSWER_TYPE.WRONG)];
         var capitalsTheme = new Theme("capitals", goodAnswers, badAnswers);
         this.addTheme(capitalsTheme);
         return capitalsTheme;
@@ -87,7 +87,7 @@ var Opponent = /** @class */ (function () {
         this._element.style.left = "".concat(position + movement.value, "px");
     };
     Opponent.prototype.checkCollision = function () {
-        return this._element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth;
+        return this._element.offsetLeft < HERO_HIT_POINT.offsetLeft;
     };
     Opponent.prototype.increaseSpeed = function (increase) {
         this.movement.value -= increase;
@@ -130,6 +130,19 @@ var Hero = /** @class */ (function () {
     };
     Hero.prototype.checkForLeftLimitReaching = function () {
         return this.hero.offsetLeft <= 0;
+    };
+    Hero.prototype.heroHits = function (opponentsOnScreen) {
+        for (var i = 0; i < opponentsOnScreen.opponents.length; i++) {
+            var opponent = opponentsOnScreen.opponents[i];
+            if (opponent.element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth) {
+                if (opponent.data.isCorrect()) {
+                    alert("Congratulations! You properly killed an opponent");
+                }
+                else {
+                    alert("You made a mistake! You should not have killed that one !");
+                }
+            }
+        }
     };
     return Hero;
 }());
@@ -198,12 +211,18 @@ var Game = /** @class */ (function () {
         this.backgroundMovement = 0;
     }
     Game.prototype.init = function () {
+        var _this = this;
         this.hero = new Hero(document.getElementById("heroImg"), document.getElementById("hero"));
         this.opponentsOnScreen = new OpponentsOnScreen();
         this.buildInjectAndLaunchNextOpponent();
         this.hero.animate();
         this.moveHero(LEFT_TO_RIGHT_MOVEMENT);
         this.animateOpponents();
+        document.addEventListener("keydown", function (event) {
+            if (event.key === " ") {
+                _this.hero.heroHits(_this.opponentsOnScreen);
+            }
+        });
     };
     Game.prototype.buildInjectAndLaunchNextOpponent = function () {
         var opponent = this.getNextOpponent();
@@ -229,7 +248,8 @@ var Game = /** @class */ (function () {
     Game.prototype.triggerOpponentMovement = function (opponent) {
         var updateMovement = function () {
             opponent.updatePosition(opponent.movement);
-            if (opponent.checkCollision()) {
+            if (opponent.checkCollision() && opponent.data.isCorrect()) {
+                alert("vous n avez pas tué cet adversaire!");
                 //this.opponentsOnScreen.removeOpponent(opponent);
                 //return;
             }
@@ -286,7 +306,7 @@ var Game = /** @class */ (function () {
     return Game;
 }());
 var LEFT_TO_RIGHT_MOVEMENT = new Movement(DIRECTIONS.LEFT, 2);
-var RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -0.2);
+var RIGHT_TO_LEFT_MOVEMENT = new Movement(DIRECTIONS.LEFT, -2);
 var HERO_HIT_POINT = document.getElementById("hero");
 var reduxStore = new ReduxStore();
 var dataContainer = document.getElementById("data");

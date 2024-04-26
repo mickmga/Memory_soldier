@@ -43,7 +43,7 @@ class ReduxStore {
 
   private getCapitalsTheme(): Theme {
     let goodAnswers = [new Answer("Paris", ANSWER_TYPE.RIGHT), new Answer("London", ANSWER_TYPE.RIGHT)];
-    let badAnswers = [new Answer("Chicago", ANSWER_TYPE.WRONG), new Answer("Monaco", ANSWER_TYPE.RIGHT)];
+    let badAnswers = [new Answer("Chicago", ANSWER_TYPE.WRONG), new Answer("Monaco", ANSWER_TYPE.WRONG)];
     const capitalsTheme = new Theme("capitals", goodAnswers, badAnswers);
     this.addTheme(capitalsTheme);
     return capitalsTheme;
@@ -116,15 +116,13 @@ class Opponent implements ICharacter, ICollidable {
   }
 
   checkCollision(): boolean {
-    return this._element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth;
+    return this._element.offsetLeft < HERO_HIT_POINT.offsetLeft;
   }
 
   increaseSpeed(increase: number): void {
     this.movement.value -= increase;
   }
-}
-
-
+} 
 
 class Hero implements ICharacter {
   private animateCharacterCount: number = 0;
@@ -170,6 +168,25 @@ class Hero implements ICharacter {
 
   checkForLeftLimitReaching(): boolean {
     return this.hero.offsetLeft <= 0;
+  }
+
+  heroHits(opponentsOnScreen: OpponentsOnScreen): void {
+
+    for(let i=0; i < opponentsOnScreen.opponents.length; i++){
+      
+      let opponent = opponentsOnScreen.opponents[i];
+      
+      if(opponent.element.offsetLeft < HERO_HIT_POINT.offsetLeft + HERO_HIT_POINT.offsetWidth){
+
+        if(opponent.data.isCorrect()){
+          alert("Congratulations! You properly killed an opponent");
+        } else {
+          alert("You made a mistake! You should not have killed that one !");   
+        }
+
+      
+       }
+    }    
   }
 }
 
@@ -242,6 +259,14 @@ class Game {
     this.hero.animate();
     this.moveHero(LEFT_TO_RIGHT_MOVEMENT);
     this.animateOpponents();
+
+    document.addEventListener("keydown", (event: KeyboardEvent) => 
+      {
+        if (event.key === " ") {
+          this.hero.heroHits(this.opponentsOnScreen);
+        }
+      })
+   
   }
 
   buildInjectAndLaunchNextOpponent(): void {
@@ -275,12 +300,14 @@ class Game {
     const updateMovement = () => {
       opponent.updatePosition(opponent.movement);
 
-      if (opponent.checkCollision()) {
+      if (opponent.checkCollision() && opponent.data.isCorrect()) {
+        alert("vous n avez pas tué cet adversaire!");
         //this.opponentsOnScreen.removeOpponent(opponent);
         //return;
       }
 
       requestAnimationFrame(updateMovement);
+      
     };
 
     updateMovement();
@@ -308,6 +335,7 @@ class Game {
     this.hero.updatePosition(movement);
 
     requestAnimationFrame(() => this.moveHero(movement));
+    
   }
 
   animateOpponents(): void {

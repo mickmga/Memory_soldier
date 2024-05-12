@@ -9,7 +9,6 @@ mongoose.connect(mongoDB);
 // Get the default connection
 const db = mongoose.connection;
 
-
 // Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -19,11 +18,10 @@ db.once('open', async function () {
 
    const {room1, castlePalaceTemplate} = await generateCastleTemplate();
 
-   console.log(room1.elements)
-
    const datesPalaceRoom1 = await new PalaceRoom(
     {
       name: 'dpr1',
+      template_room_id: room1.id,
       slotDataBlocks: await generateCastleSlotsDataBlocks(room1.elements)
     }
    ).save();
@@ -51,17 +49,14 @@ const generateCastleRoom1elements = async () => {
         height_in_tile: 2,
         width_in_tile: 1,
       }
-
     }
-
-    );
+  );
 
     await element.save();
 
     rooms.push(
       element.id
     )
-
   }
 
   return rooms;
@@ -71,6 +66,7 @@ const generateCastleRoom1elements = async () => {
 const generateCastleTemplate = async () => {
 
   const room1 = await new PalaceTemplateRoom({
+    image: 'assets/maps/castle/1024x576/backgroundLevel1.png',
     elements: await generateCastleRoom1elements()
   }
   ).save();
@@ -84,25 +80,26 @@ const generateCastleTemplate = async () => {
   
 }
 
-const generateCastleSlotsDataBlocks = (templateElements) => {
+const generateCastleSlotsDataBlocks = async (templateElements) => {
  
     const slotsDataBlocks = [];
 
-    templateElements.forEach(async templateElement => {
+    for(let i = 0; i < templateElements.length; i++){
+
+      const templateEl = templateElements[i];
 
       const slotData = await new PalaceSlotData(
         {
-          element_id: templateElement,
+          element_id: templateEl,
           image: "none"
         }
       ).save();
 
       slotsDataBlocks.push(
-        slotData.id
-      )
+        slotData
+      );
 
-    });
+    }
 
     return slotsDataBlocks;
 }
-

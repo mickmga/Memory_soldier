@@ -20,7 +20,7 @@ const PalaceTemplateRoomSchema = new Schema(
       type: Schema.Types.ObjectId,
       default: () => new mongoose.Types.ObjectId()
     },
-
+    image:String,
     elements: [{
       type: Schema.Types.ObjectId,
       ref: 'PalaceTemplateElementSchema'
@@ -29,13 +29,14 @@ const PalaceTemplateRoomSchema = new Schema(
   }
 );
 
-
-
 const PalaceRoomSchema = new Schema({
-
    _id: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId()
+   },
+   template_room_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'PalaceTemplateRoomSchema'
    },
    name:String,
    slotDataBlocks: [
@@ -44,7 +45,6 @@ const PalaceRoomSchema = new Schema({
       ref: 'PalaceSlotDataSchema'
     }
    ]
-
 })
 
 // Define PalaceSession schema
@@ -91,6 +91,7 @@ const PalaceTemplateElementSchema = new Schema(
       type: Schema.Types.ObjectId,
       default: () => new mongoose.Types.ObjectId()
     },
+    type: String,
     coordinates: {
       x_tile: String,
       y_tile: String,
@@ -116,12 +117,32 @@ const PalaceSlotDataSchema = new Schema(
     }
 );
 
+const PalaceItemsInventorySchema = new Schema({
+  items: [{
+    type: Schema.Types.ObjectId,
+   ref: ''
+  }]
+ }
+);
+
+const PalaceItemSchema = new Schema(
+  {
+    _id: {
+      type: Schema.Types.ObjectId,
+      default: () => new mongoose.Types.ObjectId()
+    },
+    name: String,
+    src: String
+  }
+);
 
 const PalaceTemplate = mongoose.model('PalaceTemplate', PalaceTemplateSchema);
 const PalaceTemplateRoom = mongoose.model('PalaceTemplateRoom', PalaceTemplateRoomSchema);
 const PalaceTemplateElement = mongoose.model('PalaceTemplateElement', PalaceTemplateElementSchema);
 const PalaceSlotData = mongoose.model('PalaceSlotData', PalaceSlotDataSchema);
 const Palace = mongoose.model('Palace', PalaceSchema);
+const PalaceItem = mongoose.model('PalaceItem', PalaceItemSchema);
+const PalaceItemsInventory = mongoose.model('PalaceItemsInventory', PalaceItemsInventorySchema)
 const PalaceRoom = mongoose.model('PalaceRoom', PalaceRoomSchema);
 
-module.exports = {PalaceTemplate, PalaceTemplateRoom, PalaceTemplateElement, Palace, PalaceRoom, PalaceSlotData};
+module.exports = {PalaceTemplate, PalaceTemplateRoom, PalaceTemplateElement, Palace, PalaceRoom, PalaceSlotData, PalaceItem, PalaceItemsInventory, };

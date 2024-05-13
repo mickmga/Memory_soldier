@@ -136,6 +136,24 @@ const PalaceItemSchema = new Schema(
   }
 );
 
+const UserSchema = new Schema(
+  {
+    _id: {
+      type: Schema.Types.ObjectId,
+      default: () => new mongoose.Types.ObjectId()
+    },
+    name: String,
+    password: String,
+    palaces: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'PalaceSchema'
+      }
+    ]
+  }
+)
+
+const User = mongoose.model('User', UserSchema);
 const PalaceTemplate = mongoose.model('PalaceTemplate', PalaceTemplateSchema);
 const PalaceTemplateRoom = mongoose.model('PalaceTemplateRoom', PalaceTemplateRoomSchema);
 const PalaceTemplateElement = mongoose.model('PalaceTemplateElement', PalaceTemplateElementSchema);
@@ -145,4 +163,4 @@ const PalaceItem = mongoose.model('PalaceItem', PalaceItemSchema);
 const PalaceItemsInventory = mongoose.model('PalaceItemsInventory', PalaceItemsInventorySchema)
 const PalaceRoom = mongoose.model('PalaceRoom', PalaceRoomSchema);
 
-module.exports = {PalaceTemplate, PalaceTemplateRoom, PalaceTemplateElement, Palace, PalaceRoom, PalaceSlotData, PalaceItem, PalaceItemsInventory, };
+module.exports = {PalaceTemplate, PalaceTemplateRoom, PalaceTemplateElement, Palace, PalaceRoom, PalaceSlotData, PalaceItem, PalaceItemsInventory, User};

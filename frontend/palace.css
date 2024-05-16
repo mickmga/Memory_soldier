@@ -1,12 +1,34 @@
+#gameContainer { 
+  width: 100%; 
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top:0;
+  display:flex;
+}
+
+.room_container {
+  width: 100%; 
+  height: 100%;
+}
+
 #background {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#background2 {
+  position: absolute;
+  top: 0;
+  left: 100vw;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
  #background_img {
@@ -21,6 +43,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 2;
    }
 
 
@@ -29,23 +52,25 @@
    height: auto;
  }
 
- #itemContainer1 {
+ .itemContainer1 {
    left: 7.5vw;
  }
 
- #itemContainer2 {
+ .itemContainer2 {
    left: 27.5vw;
  }
 
- #itemContainer3 {
+ .itemContainer3 {
    left: 50.5vw;
  }
 
- #itemContainer4 {
+ .itemContainer4 {
    left: 72.5vw;
  }
 
  
- #itemContainer5 {
+ .itemContainer5 {
    left: 87.5vw;
  }
+
+ 

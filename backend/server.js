@@ -10,7 +10,6 @@ app.post('/login', (req, res) => {
 
 app.post('/register', (req, res) => {
   console.log('registered');
-  
   res.send('registered');
 });
 

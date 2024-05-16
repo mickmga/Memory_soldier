@@ -13,3 +13,39 @@
     height: 100vh;
     width: 100vw;
  }
+
+ .itemsContainer {
+    position: absolute;
+    top: 48vh;
+    width: 5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   }
+
+
+.itemsContainer img {
+   width: 100%;
+   height: auto;
+ }
+
+ #itemContainer1 {
+   left: 7.5vw;
+ }
+
+ #itemContainer2 {
+   left: 27.5vw;
+ }
+
+ #itemContainer3 {
+   left: 50.5vw;
+ }
+
+ #itemContainer4 {
+   left: 72.5vw;
+ }
+
+ 
+ #itemContainer5 {
+   left: 87.5vw;
+ }

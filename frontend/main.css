@@ -23,8 +23,10 @@ body {
     height: 50vh;
     aspect-ratio: 1/1;
     position: absolute;
-    top: 20vh;
+    top: 30.5vh;
     left: 10vw;
+    display:flex;
+    align-items: flex-end;
 }
 
 .opponent {

@@ -1,22 +1,53 @@
 window.onload = function () {
     console.log("let's go, you are ready to start building");
 };
-let launched = false;
+let cameraLaunched = false;
+let leftCameraLaunched = false;
+let singleAnimationLaunched = false;
+let walking = false;
+let walkingLeft = false;
+let singleAnimationSelectedSprite = 0;
 
 
 document.addEventListener("keydown", function (event) {
-    
-    if (event.key === 'd' && launched === false) {
-       // cameraMovement();
-        //animateCharacter("assets/hero/walk/walk", 6);
-        animateCharacterOnce('assets/hero/item_creation/item_creation', 3);
+    if (event.key === 'd' && cameraLaunched === false) {
+       walking = true;
+       cameraMovement();
+       animateCharacter("assets/hero/walk/walk", 6);
+    } 
+    if (event.key === 'q' && leftCameraLaunched === false) {
+      walkingLeft = true;
+      leftCameraMovement();
+      moveLeft("assets/hero/walk_left/walk_left", 6);
+   } 
+
+
+    if(event.key === ' '){
+      walking = false;
+      cameraLaunched=false;
+      animateCharacterOnce('assets/hero/item_creation/item_creation',3)
     }
+});
+
+document.addEventListener("keyup", function (event) {
+  if (event.key === 'd' && cameraLaunched === true) {
+     walking = false;
+     cameraLaunched=false;
+  }
+  if (event.key === 'q' && leftCameraLaunched === true) {
+    walkingLeft = false;
+    leftCameraLaunched=false;
+ } 
 });
 
 
 const cameraMovement = () => {
 
-  launched = true;
+  if(walking === false) {
+    return;
+  }
+
+  cameraLaunched = true;
 
   const gameContainer = document.getElementById("gameContainer");
 
@@ -28,6 +59,23 @@ const cameraMovement = () => {
 
 }
 
+const leftCameraMovement = () => {
+
+  if(walkingLeft === false) {
+    return;
+  }
+
+  leftCameraLaunched = true;
+
+  const gameContainer = document.getElementById("gameContainer");
+
+  const gameContainerLeft = gameContainer.offsetLeft;
+
+  gameContainer.style.left = `${gameContainerLeft+3}px`;
+
+  requestAnimationFrame(leftCameraMovement);
+}
+
 let animateCharacterCount = 0;
 
 let currentHeroImgSuffix = 0;
@@ -37,9 +85,13 @@ let heroImg = document.getElementById('heroImg');
 
 const animateCharacter = (spriteBase, spriteLength) => {
 
+  if(walking === false) {
+    return;
+  }
+  
     if (animateCharacterCount < 3) {
       animateCharacterCount++;
-      requestAnimationFrame(animateCharacter);
+      requestAnimationFrame(() => animateCharacter(spriteBase, spriteLength));
       return;
     }
 
@@ -59,9 +111,9 @@ const animateCharacter = (spriteBase, spriteLength) => {
 
   const animateCharacterOnce = (spriteBase, spriteLength) => {
 
-    console.log(spriteBase)
+    singleAnimationLaunched = true;
 
-    if (animateCharacterCount < 5) {
+    if (animateCharacterCount < 4) {
       animateCharacterCount++;
       requestAnimationFrame( () => animateCharacterOnce(spriteBase, spriteLength) );
       return;
@@ -69,16 +121,40 @@ const animateCharacter = (spriteBase, spriteLength) => {
 
     animateCharacterCount = 0;
 
-    if (currentHeroImgSuffix === spriteLength) {
+    if (singleAnimationSelectedSprite === spriteLength) { 
+      singleAnimationSelectedSprite = 0;
       return;
     } else {
-      currentHeroImgSuffix++;
+      singleAnimationSelectedSprite++;
     }
-    heroImg.src = `${spriteBase}${currentHeroImgSuffix}.png`;
+    heroImg.src = `${spriteBase}${singleAnimationSelectedSprite}.png`;
 
     requestAnimationFrame(() => animateCharacterOnce(spriteBase, spriteLength));
 
   };
 
 
+  const moveLeft = (spriteBase, spriteLength) => {
 
+    if(walkingLeft === false) {
+      return;
+    }
+    
+      if (animateCharacterCount < 3) {
+        animateCharacterCount++;
+        requestAnimationFrame(() => moveLeft(spriteBase, spriteLength));
+        return;
+      }
+  
+      animateCharacterCount = 0;
+  
+      if (currentHeroImgSuffix === spriteLength) {
+        currentHeroImgSuffix = 1;
+      } else {
+        currentHeroImgSuffix++;
+      }
+      heroImg.src = `${spriteBase}${currentHeroImgSuffix}.png`;
+  
+      requestAnimationFrame(() => moveLeft(spriteBase, spriteLength));
+  
+    };

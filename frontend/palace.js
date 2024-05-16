@@ -7,8 +7,9 @@ let launched = false;
 document.addEventListener("keydown", function (event) {
     
     if (event.key === 'd' && launched === false) {
-        cameraMovement();
-        animateCharacter();
+       // cameraMovement();
+        //animateCharacter("assets/hero/walk/walk", 6);
+        animateCharacterOnce('assets/hero/item_creation/item_creation', 3);
     }
 });
 
@@ -25,9 +26,7 @@ const cameraMovement = () => {
 
   requestAnimationFrame(cameraMovement);
 
-
 }
-
 
 let animateCharacterCount = 0;
 
@@ -36,7 +35,8 @@ let currentHeroImgSuffix = 0;
 let heroImg = document.getElementById('heroImg');
 
 
-const animateCharacter = () => {
+const animateCharacter = (spriteBase, spriteLength) => {
+
     if (animateCharacterCount < 3) {
       animateCharacterCount++;
       requestAnimationFrame(animateCharacter);
@@ -45,13 +45,40 @@ const animateCharacter = () => {
 
     animateCharacterCount = 0;
 
-    if (currentHeroImgSuffix === 6) {
+    if (currentHeroImgSuffix === spriteLength) {
       currentHeroImgSuffix = 1;
     } else {
       currentHeroImgSuffix++;
     }
+    heroImg.src = `${spriteBase}${currentHeroImgSuffix}.png`;
 
-    heroImg.src = `assets/hero/walk/walk${currentHeroImgSuffix}.png`;
+    requestAnimationFrame(() => animateCharacter(spriteBase, spriteLength));
 
-    requestAnimationFrame(animateCharacter);
   };
+
+
+  const animateCharacterOnce = (spriteBase, spriteLength) => {
+
+    console.log(spriteBase)
+
+    if (animateCharacterCount < 5) {
+      animateCharacterCount++;
+      requestAnimationFrame( () => animateCharacterOnce(spriteBase, spriteLength) );
+      return;
+    }
+
+    animateCharacterCount = 0;
+
+    if (currentHeroImgSuffix === spriteLength) {
+      return;
+    } else {
+      currentHeroImgSuffix++;
+    }
+    heroImg.src = `${spriteBase}${currentHeroImgSuffix}.png`;
+
+    requestAnimationFrame(() => animateCharacterOnce(spriteBase, spriteLength));
+
+  };
+
+
+

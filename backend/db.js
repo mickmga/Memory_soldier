@@ -93,8 +93,8 @@ const PalaceTemplateElementSchema = new Schema(
     },
     type: String,
     coordinates: {
-      x_tile: String,
-      y_tile: String,
+      x_coordinate: String,
+      y_coordinate: String,
     },
     size: {
       height_in_tile: String,
@@ -151,7 +151,7 @@ const UserSchema = new Schema(
       }
     ]
   }
-)
+);
 
 const User = mongoose.model('User', UserSchema);
 const PalaceTemplate = mongoose.model('PalaceTemplate', PalaceTemplateSchema);

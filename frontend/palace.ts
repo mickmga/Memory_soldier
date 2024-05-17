@@ -7,6 +7,7 @@ let singleAnimationLaunched = false;
 let walking = false;
 let walkingLeft = false;
 let singleAnimationSelectedSprite = 0;
+let openedMenu = false;
 
 
 document.addEventListener("keydown", function (event) {
@@ -22,7 +23,8 @@ document.addEventListener("keydown", function (event) {
    } 
 
    if(event.key === 'm'){
-     openMenu();
+    alert("ok")
+    openOrCloseMenu();
    }
 
     if(event.key === ' '){
@@ -43,10 +45,16 @@ document.addEventListener("keyup", function (event) {
  } 
 });
 
-const openMenu = () => {
+const openOrCloseMenu = () => {
 
-    alert("opening menu");
-    
+    const menu = document.getElementById("menu")!;
+
+    menu.style.display = openedMenu ? 'none' : 'flex';
+
+    console.log(openedMenu ? 'none' : 'flex')
+
+    openedMenu = !openedMenu;
+
 }
 
 
@@ -169,4 +177,7 @@ const animateCharacter = (spriteBase, spriteLength) => {
     };
 
 
-  
+    const pickItem = (event: {target: {id: string}}) => {
+
+       
+    }

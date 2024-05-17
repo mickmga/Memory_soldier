@@ -123,8 +123,6 @@ body {
   left: 325vw;
 }
 
-
-
  #hero {
   height: 50vh;
   aspect-ratio: 1/1;
@@ -140,4 +138,80 @@ body {
 #heroImg {
   height: 80%;
   width: auto;
+}
+
+
+#menu {
+  position: absolute;
+  top: 30vh;
+  left: 35vw;
+  background: brown;
+  opacity: 0.6;
+  z-index: 1000;
+  height: 50vh;
+  width: 40vw;
+  display: flex;
+}
+
+
+#menuA {
+  height: 100%;
+  width: 60%;
+  background: blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#menuAA {
+  background: orange;
+  height: 99%;
+  width: 99%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.menu_item_container {
+  border: solid 1px;
+  width: 22.5%;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+#menuB {
+  height: 100%;
+  width: 40%;
+  background: grey;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#menuBA{
+  background: green;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#menuBB{
+  background: purple;
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu_item {
+  height: 80%;
+  width: auto; 
+}
+
+.large_menu_item {
+  height: 80%;
+  width: auto; 
 }

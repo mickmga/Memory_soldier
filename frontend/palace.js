@@ -7,6 +7,7 @@ var singleAnimationLaunched = false;
 var walking = false;
 var walkingLeft = false;
 var singleAnimationSelectedSprite = 0;
+var openedMenu = false;
 document.addEventListener("keydown", function (event) {
     if (event.key === 'd' && cameraLaunched === false) {
         walking = true;
@@ -19,7 +20,8 @@ document.addEventListener("keydown", function (event) {
         moveLeft("assets/hero/walk_left/walk_left", 6);
     }
     if (event.key === 'm') {
-        openMenu();
+        alert("ok");
+        openOrCloseMenu();
     }
     if (event.key === ' ') {
         walking = false;
@@ -37,8 +39,11 @@ document.addEventListener("keyup", function (event) {
         leftCameraLaunched = false;
     }
 });
-var openMenu = function () {
-    alert("opening menu");
+var openOrCloseMenu = function () {
+    var menu = document.getElementById("menu");
+    menu.style.display = openedMenu ? 'none' : 'flex';
+    console.log(openedMenu ? 'none' : 'flex');
+    openedMenu = !openedMenu;
 };
 var cameraMovement = function () {
     if (walking === false) {
@@ -118,4 +123,6 @@ var moveLeft = function (spriteBase, spriteLength) {
     }
     heroImg.src = "".concat(spriteBase).concat(currentHeroImgSuffix, ".png");
     requestAnimationFrame(function () { return moveLeft(spriteBase, spriteLength); });
+};
+var pickItem = function (event) {
 };

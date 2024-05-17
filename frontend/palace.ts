@@ -21,6 +21,9 @@ document.addEventListener("keydown", function (event) {
       moveLeft("assets/hero/walk_left/walk_left", 6);
    } 
 
+   if(event.key === 'm'){
+     openMenu();
+   }
 
     if(event.key === ' '){
       walking = false;
@@ -39,6 +42,12 @@ document.addEventListener("keyup", function (event) {
     leftCameraLaunched=false;
  } 
 });
+
+const openMenu = () => {
+
+    alert("opening menu");
+    
+}
 
 
 const cameraMovement = () => {

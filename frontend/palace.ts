@@ -23,7 +23,6 @@ document.addEventListener("keydown", function (event) {
    } 
 
    if(event.key === 'm'){
-    alert("ok")
     openOrCloseMenu();
    }
 
@@ -50,8 +49,6 @@ const openOrCloseMenu = () => {
     const menu = document.getElementById("menu")!;
 
     menu.style.display = openedMenu ? 'none' : 'flex';
-
-    console.log(openedMenu ? 'none' : 'flex')
 
     openedMenu = !openedMenu;
 

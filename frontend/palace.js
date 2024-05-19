@@ -20,7 +20,6 @@ document.addEventListener("keydown", function (event) {
         moveLeft("assets/hero/walk_left/walk_left", 6);
     }
     if (event.key === 'm') {
-        alert("ok");
         openOrCloseMenu();
     }
     if (event.key === ' ') {

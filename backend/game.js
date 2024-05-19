@@ -40,73 +40,79 @@ db.once('open', async () => {
   }
 
 
-  const lookForSlot = async (elementObjectId) => {
+  console.log("ok, we'll try to get the slot corresponding to what we look for =>")
+
+});
 
 
-    for(let i=0; i < dataSlots.length; i++){
+const lookForSlot = async (elementObjectId) => {
 
-       const slotDataDataB = dataSlots[i];
+  const slotData = await PalaceSlotData.find({element_id: elementObjectId.toString()});
+
+  return slotData[0];
+
+}
+
+const findElementByLeft = async (left) => {
+
+  const castleTemplateRoom1elements = await getCastleRoom1Elements();
 
 
-       if(slotDataDataB.element_id.toString() === elementObjectId.toString()){
+  for(let i=0; i < castleTemplateRoom1elements.length; i++){
 
-        console.log("the slot was foundp")
-        
-        return slotDataDataB;
-       }
+   const element = await PalaceTemplateElement.findById(castleTemplateRoom1elements[i]);
 
-    }
-
-    return null;
-
-  }
-
-  const findElementByLeft = async (left) => {
-
-   for(let i=0; i < castleTemplateRoom1.elements.length; i++){
-
-    const element = await PalaceTemplateElement.findById(castleTemplateRoom1.elements[i]);
-
-    if(element.coordinates.x_coordinate === left){
-      return element;
-    }
-    
-  }
-  return null;
+   if(element.coordinates.x_coordinate === left){
+     return element;
+   }
+   
  }
 
 
- const updateSlotImage = async (slot_id) => {
+ return null;
+}
 
-   const slotDataCollection = await db.collection('palaceslotdatas');
+const getCastleRoom1Elements = async () => {
 
- }
+  const castleTemplate = await PalaceTemplate.findOne({name: 'Castle'});
 
- console.log("ok, we'll try to get the slot corresponding to what we look for =>")
-
- //console.log(castleTemplateRoom1elements[0].id);
+  const castleTemplateRoom1 = await PalaceTemplateRoom.findById(castleTemplate.rooms[0]);
 
  
-
- const updateSlot = async (slot_id) => {
-
-  const elementPicked = await findElementByLeft('7.5vw');
+  const castleRoom1elements = [];
  
+  for(let i=0; i < castleTemplateRoom1.elements.length; i++){
+ 
+   const element = await PalaceTemplateElement.findById(castleTemplateRoom1.elements[i]);
+     
+   castleRoom1elements.push(element);
+ 
+  }
+
+
+  return castleRoom1elements;
+
+
+}
+
+
+const updateSlot = async (left, image) => {
+
+  const elementPicked = await findElementByLeft(`${left}vw`);
+
  
   const firstSlot = await lookForSlot(elementPicked._id);
 
   const slotDataCollection = await db.collection("palaceslotdatas");
 
 
-  const result = await slotDataCollection.updateOne({_id: firstSlot._id }, { $set: {image: 'newSrc'}  });
 
-  console.log(result)
+  const result = await slotDataCollection.updateOne({_id: firstSlot._id }, { $set: {image}  });
+
+  console.log(result);
+
+ 
+}
 
 
- }
-
- //console.log(lookForSlot(castleTemplateRoom1elements[0]));
-
- updateSlot()
-
-});
+module.exports = {updateSlot};

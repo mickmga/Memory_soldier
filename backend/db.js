@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+
 // Define PalaceTemplate schema
 const PalaceTemplateSchema = new Schema({
   _id: {

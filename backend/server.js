@@ -1,5 +1,6 @@
 const app = require("express")();
 const https = require("https");
+const {updateSlot} = require("./game");
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*'); // Change '*' to your domain for better security
@@ -49,6 +50,7 @@ app.get('/', (req, res) => {
 
 app.get('/slot/update_item', (req, res) => {
   res.send("item updated");
+  updateSlot('7.5', 'new val');
  //store it in backend
 
 });

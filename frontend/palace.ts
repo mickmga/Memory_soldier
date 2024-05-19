@@ -9,6 +9,8 @@ let walkingLeft = false;
 let singleAnimationSelectedSprite = 0;
 let openedMenu = false;
 
+let selectedSlot: string | null = null;
+
 
 document.addEventListener("keydown", function (event) {
     if (event.key === 'd' && cameraLaunched === false) {
@@ -21,10 +23,6 @@ document.addEventListener("keydown", function (event) {
       leftCameraMovement();
       moveLeft("assets/hero/walk_left/walk_left", 6);
    } 
-
-   if(event.key === 'm'){
-    openOrCloseMenu();
-   }
 
     if(event.key === ' '){
       walking = false;
@@ -173,8 +171,30 @@ const animateCharacter = (spriteBase, spriteLength) => {
   
     };
 
+    const  extractAfterValue= (value: string, filePath: string): string => {
+      const index = filePath.indexOf(value);
+      console.log(index)
+      if (index !== -1) {
 
-    const pickItem = (event: {target: {id: string}}) => {
-
-       
+        return filePath.substring(index + value.length);
+      }
+      return ""; // or handle it in another way if "frontend/" is not found
     }
+    
+
+
+
+  const pickItem = (event: {target: {currentSrc: string}}) => {
+    console.log("item selected =>");
+    const slotId = extractAfterValue('frontend', event.target.currentSrc);
+  }
+
+  const selectSlot = (event: {target: {id: string} } ) => {
+    const slotId = extractAfterValue('slot_', event.target.id);
+    selectedSlot=slotId;
+    openOrCloseMenu();
+  }
+
+  const updateSlotImage = () => {
+     fetch("http://localhost:3000/slot/update_item");
+  }

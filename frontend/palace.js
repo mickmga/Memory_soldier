@@ -8,6 +8,7 @@ var walking = false;
 var walkingLeft = false;
 var singleAnimationSelectedSprite = 0;
 var openedMenu = false;
+var selectedSlot = null;
 document.addEventListener("keydown", function (event) {
     if (event.key === 'd' && cameraLaunched === false) {
         walking = true;
@@ -18,9 +19,6 @@ document.addEventListener("keydown", function (event) {
         walkingLeft = true;
         leftCameraMovement();
         moveLeft("assets/hero/walk_left/walk_left", 6);
-    }
-    if (event.key === 'm') {
-        openOrCloseMenu();
     }
     if (event.key === ' ') {
         walking = false;
@@ -41,7 +39,6 @@ document.addEventListener("keyup", function (event) {
 var openOrCloseMenu = function () {
     var menu = document.getElementById("menu");
     menu.style.display = openedMenu ? 'none' : 'flex';
-    console.log(openedMenu ? 'none' : 'flex');
     openedMenu = !openedMenu;
 };
 var cameraMovement = function () {
@@ -123,5 +120,23 @@ var moveLeft = function (spriteBase, spriteLength) {
     heroImg.src = "".concat(spriteBase).concat(currentHeroImgSuffix, ".png");
     requestAnimationFrame(function () { return moveLeft(spriteBase, spriteLength); });
 };
+var extractAfterValue = function (value, filePath) {
+    var index = filePath.indexOf(value);
+    console.log(index);
+    if (index !== -1) {
+        return filePath.substring(index + value.length);
+    }
+    return ""; // or handle it in another way if "frontend/" is not found
+};
 var pickItem = function (event) {
+    console.log("item selected =>");
+    var slotId = extractAfterValue('frontend', event.target.currentSrc);
+};
+var selectSlot = function (event) {
+    var slotId = extractAfterValue('slot_', event.target.id);
+    selectedSlot = slotId;
+    openOrCloseMenu();
+};
+var updateSlotImage = function () {
+    fetch("http://localhost:3000/slot/update_item");
 };

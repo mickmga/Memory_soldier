@@ -146,11 +146,11 @@ body {
   top: 30vh;
   left: 35vw;
   background: brown;
-  opacity: 0.6;
+  opacity: 0.95;
   z-index: 1000;
   height: 60vh;
   aspect-ratio: 4/3;
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
@@ -167,7 +167,13 @@ body {
 #menuA input {
   height: 80%;
   width: 90%;
+  border: none;
+  background: none;
+  color: white;
+  font-size: large;
+  outline: none;
 }
+
 
 #menuB {
   height: 70%;
@@ -177,6 +183,7 @@ body {
   justify-content: flex-start;
   align-items: flex-start;
   overflow: scroll;
+  overflow-x: hidden;
 }
 .menu_item_container{
   width: 25%;
@@ -189,5 +196,14 @@ body {
   width: 80%;
   aspect-ratio: 1/1;
   border: solid 1px;
-  background: blue;
+  background: rgb(136, 59, 59);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.menu_item img{
+   width: 80%; 
+   height: auto;
+   cursor: pointer;
+  }

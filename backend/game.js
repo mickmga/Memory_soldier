@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
+const {ObjectId} = require("mongoose");
 
 const {Palace, PalaceRoom, PalaceSlotData, PalaceTemplate, PalaceTemplateRoom, PalaceTemplateElement} = require('./db.js');
+const { cp } = require("fs");
 
 mongoose.connect('mongodb://localhost:27017/memory_soldier');
 
@@ -40,11 +42,15 @@ db.once('open', async () => {
 
   const lookForSlot = async (elementObjectId) => {
 
+
     for(let i=0; i < dataSlots.length; i++){
 
        const slotDataDataB = dataSlots[i];
 
-       if(slotDataDataB.element_id.toString() === elementObjectId){
+
+       if(slotDataDataB.element_id.toString() === elementObjectId.toString()){
+
+        console.log("the slot was foundp")
         
         return slotDataDataB;
        }
@@ -55,11 +61,52 @@ db.once('open', async () => {
 
   }
 
+  const findElementByLeft = async (left) => {
 
-console.log("ok, we'll try to get the slot corresponding to the first element, being of type slot")
+   for(let i=0; i < castleTemplateRoom1.elements.length; i++){
 
- console.log(castleTemplateRoom1elements[0].id);
+    const element = await PalaceTemplateElement.findById(castleTemplateRoom1.elements[i]);
 
- console.log(lookForSlot(castleTemplateRoom1elements[0].id));
+    if(element.coordinates.x_coordinate === left){
+      return element;
+    }
+    
+  }
+  return null;
+ }
+
+
+ const updateSlotImage = async (slot_id) => {
+
+   const slotDataCollection = await db.collection('palaceslotdatas');
+
+ }
+
+ console.log("ok, we'll try to get the slot corresponding to what we look for =>")
+
+ //console.log(castleTemplateRoom1elements[0].id);
+
+ 
+
+ const updateSlot = async (slot_id) => {
+
+  const elementPicked = await findElementByLeft('7.5vw');
+ 
+ 
+  const firstSlot = await lookForSlot(elementPicked._id);
+
+  const slotDataCollection = await db.collection("palaceslotdatas");
+
+
+  const result = await slotDataCollection.updateOne({_id: firstSlot._id }, { $set: {image: 'newSrc'}  });
+
+  console.log(result)
+
+
+ }
+
+ //console.log(lookForSlot(castleTemplateRoom1elements[0]));
+
+ updateSlot()
 
 });

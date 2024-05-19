@@ -45,7 +45,13 @@ app.get('/', (req, res) => {
       console.error(e);
       res.status(500).json({ error: 'Error fetching logos' });
     });
-  });
+  })
+
+app.get('/slot/update_item', (req, res) => {
+  res.send("item updated");
+ //store it in backend
+
+});
 
 app.get('/icons', async (req, res) => {
 
@@ -60,8 +66,6 @@ app.get('/icons', async (req, res) => {
  }
 
  const logos = await getLogos();
-
- console.log(logos);
 
   res.send(logos);
  

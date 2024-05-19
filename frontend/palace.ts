@@ -173,7 +173,6 @@ const animateCharacter = (spriteBase, spriteLength) => {
 
     const  extractAfterValue= (value: string, filePath: string): string => {
       const index = filePath.indexOf(value);
-      console.log(index)
       if (index !== -1) {
 
         return filePath.substring(index + value.length);
@@ -182,11 +181,11 @@ const animateCharacter = (spriteBase, spriteLength) => {
     }
     
 
-
-
   const pickItem = (event: {target: {currentSrc: string}}) => {
     console.log("item selected =>");
     const slotId = extractAfterValue('frontend', event.target.currentSrc);
+    updateSlotImage(slotId);
+  
   }
 
   const selectSlot = (event: {target: {id: string} } ) => {
@@ -195,6 +194,6 @@ const animateCharacter = (spriteBase, spriteLength) => {
     openOrCloseMenu();
   }
 
-  const updateSlotImage = () => {
-     fetch("http://localhost:3000/slot/update_item");
+  const updateSlotImage = (src: string) => {
+     fetch("http://localhost:3000/slot/update_item?src=" + src);
   }

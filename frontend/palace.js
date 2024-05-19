@@ -122,7 +122,6 @@ var moveLeft = function (spriteBase, spriteLength) {
 };
 var extractAfterValue = function (value, filePath) {
     var index = filePath.indexOf(value);
-    console.log(index);
     if (index !== -1) {
         return filePath.substring(index + value.length);
     }
@@ -131,12 +130,13 @@ var extractAfterValue = function (value, filePath) {
 var pickItem = function (event) {
     console.log("item selected =>");
     var slotId = extractAfterValue('frontend', event.target.currentSrc);
+    updateSlotImage(slotId);
 };
 var selectSlot = function (event) {
     var slotId = extractAfterValue('slot_', event.target.id);
     selectedSlot = slotId;
     openOrCloseMenu();
 };
-var updateSlotImage = function () {
-    fetch("http://localhost:3000/slot/update_item");
+var updateSlotImage = function (src) {
+    fetch("http://localhost:3000/slot/update_item?src=" + src);
 };

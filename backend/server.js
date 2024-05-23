@@ -49,9 +49,15 @@ app.get('/', (req, res) => {
   })
 
 app.get('/slot/update_item', (req, res) => {
-  res.send("item updated");
-  updateSlot('7.5', 'new val');
- //store it in backend
+
+  try { 
+   updateSlot(req.query.slot_id, req.query.src);
+   //store it in backend
+   res.send("item updated");
+   res.status = 200;
+  } catch(err){
+    res.status = 400;
+  }
 
 });
 
@@ -68,10 +74,13 @@ app.get('/icons', async (req, res) => {
  }
 
  const logos = await getLogos();
-
   res.send(logos);
  
-})
+});
+
+app.post('/content', (req, res) => {
+  res.send("receiving content");
+});
 
 app.post('/login', (req, res) => {
   res.send('logged in');
@@ -81,5 +90,6 @@ app.post('/register', (req, res) => {
   console.log('registered');
   res.send('registered');
 });
+
 
 app.listen(3000, () => console.log("app running"));

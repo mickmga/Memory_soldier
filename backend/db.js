@@ -114,7 +114,11 @@ const PalaceSlotDataSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'PalaceTemplateElementSchema'
     },
-    image: String
+    image: String,
+    data: {
+      title: String,
+      content: String
+    }
     }
 );
 

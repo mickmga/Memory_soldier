@@ -9,6 +9,7 @@ var walkingLeft = false;
 var singleAnimationSelectedSprite = 0;
 var openedMenu = false;
 var selectedSlot = null;
+var dataEditor = document.getElementById('dataEditor');
 document.addEventListener("keydown", function (event) {
     if (event.key === 'd' && cameraLaunched === false) {
         walking = true;
@@ -128,9 +129,9 @@ var extractAfterValue = function (value, filePath) {
     return ""; // or handle it in another way if "frontend/" is not found
 };
 var pickItem = function (event) {
-    console.log("item selected =>");
-    var slotId = extractAfterValue('frontend', event.target.currentSrc);
-    updateSlotImage(slotId);
+    var itemSrc = extractAfterValue('frontend/', event.target.currentSrc);
+    updateSlotImage(itemSrc);
+    openDataEditor();
 };
 var selectSlot = function (event) {
     var slotId = extractAfterValue('slot_', event.target.id);
@@ -138,5 +139,18 @@ var selectSlot = function (event) {
     openOrCloseMenu();
 };
 var updateSlotImage = function (src) {
-    fetch("http://localhost:3000/slot/update_item?src=" + src);
+    var result = fetch("http://localhost:3000/slot/update_item?src=" + src + "&slot_id=" + selectedSlot).then(function (res) {
+        if (res.status === 200) {
+            var imgElement = document.getElementById("img_slot_" + selectedSlot);
+            imgElement.src = src;
+        }
+    });
+};
+var openDataEditor = function () {
+    dataEditor.style.display = 'flex';
+    openOrCloseMenu();
+};
+var saveText = function () {
+    var textArea = document.getElementById('editorArea');
+    console.log(textArea.value);
 };

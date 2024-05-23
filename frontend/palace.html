@@ -45,11 +45,14 @@
               </div>
 
             </div>
+
+
+            <div style="cursor: pointer;" onclick="selectSlot(event)">
    
               <div class="itemsContainer itemContainer2">
-                 <img src="assets/items/greece.png"/>  
+                 <img id="img_slot_27.5" src="assets/items/greece.png"/>  
                </div>
-                  <div class="fire itemContainer2">
+                  <div id="slot_27.5" class="fire itemContainer2">
                     <div class="fire-left">
                       <div class="main-fire"></div>
                       <div class="particle-fire"></div>
@@ -66,6 +69,7 @@
                       <div class="main-fire"></div>
                     </div>
                   </div>
+               </div>
                    
                 <div class="itemsContainer itemContainer3">
                   <img src="assets/items/knight.png"/>  
@@ -132,6 +136,7 @@
                   </div>
 
             </div>
+            
             
             <div class="room_container">
               <div id="background">
@@ -363,51 +368,51 @@
               </div>
             </div>
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/gamepad.png">
               </div>            
             </div>           
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/greece.png">
               </div>
             </div>
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/knight.png">
               </div>
             </div>
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/papyrus.png">
               </div>            </div>    
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/parthenon.png">
               </div>
             </div>
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/shield.png">
               </div>         
                </div>
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/spellbook.png">
               </div>           
               </div> 
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/superhero (1).png">
               </div>                    
                </div>
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/superhero (2).png">
               </div>                         
             </div>
             <div class="menu_item_container">
-              <div class="menu_item">
+              <div class="menu_item" onclick="pickItem(event)">
                 <img src="assets/items/superhero.png">
               </div>           
              </div>       
@@ -416,8 +421,14 @@
         </div>
 
 
-        <div id="">
-
+        <div id="dataEditor">
+            <div id="dataEditorA">
+              <input placeholder="votre titre"/>
+            </div>
+            <div id="dataEditorB">
+              <textarea id="editorArea"></textarea>
+              <button onclick="saveText()" id="saveButton">Enregistrer</button>
+            </div>
         </div>
         
         <script src="palace.js" async defer></script>

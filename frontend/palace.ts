@@ -11,6 +11,7 @@ let openedMenu = false;
 
 let selectedSlot: string | null = null;
 
+const dataEditor = document.getElementById('dataEditor');
 
 document.addEventListener("keydown", function (event) {
     if (event.key === 'd' && cameraLaunched === false) {
@@ -182,10 +183,9 @@ const animateCharacter = (spriteBase, spriteLength) => {
     
 
   const pickItem = (event: {target: {currentSrc: string}}) => {
-    console.log("item selected =>");
-    const slotId = extractAfterValue('frontend', event.target.currentSrc);
-    updateSlotImage(slotId);
-  
+    const itemSrc = extractAfterValue('frontend/', event.target.currentSrc);
+    updateSlotImage(itemSrc);
+    openDataEditor();
   }
 
   const selectSlot = (event: {target: {id: string} } ) => {
@@ -195,5 +195,29 @@ const animateCharacter = (spriteBase, spriteLength) => {
   }
 
   const updateSlotImage = (src: string) => {
-     fetch("http://localhost:3000/slot/update_item?src=" + src);
+     const result = fetch("http://localhost:3000/slot/update_item?src=" + src + "&slot_id=" + selectedSlot).then(
+     res => {
+        if(res.status === 200){
+          const imgElement = document.getElementById("img_slot_" + selectedSlot)! as HTMLImageElement;
+          imgElement.src=src;
+        }
+       }
+     );
+
+  }
+
+  const openDataEditor = () => {
+     dataEditor!.style.display = 'flex';
+     openOrCloseMenu();
+  }
+
+  const saveText = () => {
+    const textArea = document.getElementById('editorArea')! as HTMLTextAreaElement;
+    
+    fetch("http://localhost:3000/content", {
+      method: "POST",
+      headers: {
+        
+      }
+    })
   }

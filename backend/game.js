@@ -106,11 +106,7 @@ const updateSlot = async (left, image) => {
   const slotDataCollection = await db.collection("palaceslotdatas");
 
 
-
-  const result = await slotDataCollection.updateOne({_id: firstSlot._id }, { $set: {image}  });
-
-  console.log(result);
-
+  const result = await slotDataCollection.updateOne({_id: firstSlot._id }, { $set: {image, data: {title: "new data block", content: "first piece of memory" }}  });
  
 }
 

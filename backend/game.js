@@ -89,14 +89,11 @@ const getCastleRoom1Elements = async () => {
  
   }
 
-
   return castleRoom1elements;
-
-
 }
 
 
-const updateSlot = async (left, image) => {
+const updateSlotImage = async (left, image) => {
 
   const elementPicked = await findElementByLeft(`${left}vw`);
 
@@ -111,4 +108,23 @@ const updateSlot = async (left, image) => {
 }
 
 
-module.exports = {updateSlot};
+const updateSlotData = async (left,data) => {
+
+
+  const elementPicked = await findElementByLeft(`${left}vw`);
+
+ 
+  const firstSlot = await lookForSlot(elementPicked._id);
+
+  const slotDataCollection = await db.collection("palaceslotdatas");
+
+
+  const result = await slotDataCollection.updateOne({_id: firstSlot._id }, { $set: data  });
+   
+}
+
+
+
+
+
+module.exports = {updateSlotImage, updateSlotData};

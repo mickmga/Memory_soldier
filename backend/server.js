@@ -1,6 +1,7 @@
 const app = require("express")();
 const https = require("https");
-const {updateSlot} = require("./game");
+const {updateSlotImage, updateSlotData} = require("./game");
+const express = require("express");
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*'); // Change '*' to your domain for better security
@@ -8,6 +9,10 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
+
+app.use(express.json());
+
 
 app.get('/', (req, res) => {
     res.send("thanks");
@@ -51,7 +56,7 @@ app.get('/', (req, res) => {
 app.get('/slot/update_item', (req, res) => {
 
   try { 
-   updateSlot(req.query.slot_id, req.query.src);
+    updateSlotImage(req.query.slot_id, req.query.src);
    //store it in backend
    res.send("item updated");
    res.status = 200;
@@ -79,6 +84,12 @@ app.get('/icons', async (req, res) => {
 });
 
 app.post('/content', (req, res) => {
+  try {
+    updateSlotData(req.body.left, req.body.data);
+  } catch(e){
+    res.status = 400;
+  }
+  res.status = 200;
   res.send("receiving content");
 });
 
@@ -87,7 +98,6 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  console.log('registered');
   res.send('registered');
 });
 

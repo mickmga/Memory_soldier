@@ -35,18 +35,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
-window.onload = function () { return __awaiter(_this, void 0, void 0, function () {
-    var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, getLogos()];
-            case 1:
-                response = _a.sent();
-                console.log(response);
-                return [2 /*return*/];
-        }
-    });
-}); };
 var getLogos = function () { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         console.log("getting logos");

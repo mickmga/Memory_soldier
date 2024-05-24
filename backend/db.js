@@ -119,7 +119,7 @@ const PalaceSlotDataSchema = new Schema(
       title: String,
       content: String
     }
-    }
+  }
 );
 
 const PalaceItemsInventorySchema = new Schema({

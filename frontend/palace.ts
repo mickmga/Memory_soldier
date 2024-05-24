@@ -212,12 +212,36 @@ const animateCharacter = (spriteBase, spriteLength) => {
   }
 
   const saveText = () => {
+    
+    const dataTitleInput = document.getElementById('dataTitle')! as HTMLInputElement;
     const textArea = document.getElementById('editorArea')! as HTMLTextAreaElement;
     
     fetch("http://localhost:3000/content", {
-      method: "POST",
+      method: 'POST', // Specify the request method
       headers: {
-        
+        'Content-Type': 'application/json' // Specify the content type as JSON
+      },
+      body: JSON.stringify(
+        { 
+          left: selectedSlot,
+          data: {
+            title: dataTitleInput.value,
+            body: textArea.value
+          }
+       }) // Convert the data object to a JSON string
+    }).then(response => {
+      // Check if the response is successful (status code 200-299)
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
       }
+      return response.json(); // Parse the JSON from the response
     })
+    .then(data => {
+      // Handle the parsed JSON data
+      console.log('Success:', data);
+    })
+    .catch(error => {
+      // Handle any errors that occurred during the fetch
+      console.error('Error:', error);
+    });
   }

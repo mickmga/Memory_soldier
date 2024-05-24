@@ -1,8 +1,4 @@
-window.onload = async (): Promise<void> => {
-   //console.log("making the first api call!");
-   const response = await getLogos();
-   console.log(response);
-}
+
 
 
 const getLogos = async (): Promise<any> => {

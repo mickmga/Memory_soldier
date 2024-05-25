@@ -1,6 +1,6 @@
 const app = require("express")();
 const https = require("https");
-const {updateSlotImage, updateSlotData} = require("./game");
+const {updateSlotImage, updateSlotData, getSlots} = require("./game");
 const express = require("express");
 
 app.use((req, res, next) => {
@@ -12,7 +12,6 @@ app.use((req, res, next) => {
 
 
 app.use(express.json());
-
 
 app.get('/', (req, res) => {
     res.send("thanks");
@@ -56,6 +55,7 @@ app.get('/', (req, res) => {
 app.get('/slot/update_item', (req, res) => {
 
   try { 
+    console.log("trying to update item")
     updateSlotImage(req.query.slot_id, req.query.src);
    //store it in backend
    res.send("item updated");
@@ -80,8 +80,27 @@ app.get('/icons', async (req, res) => {
 
  const logos = await getLogos();
   res.send(logos);
- 
 });
+
+app.get("/slotData", async (req, res) => {
+
+  console.log("getting data")
+
+  try {
+    const slots = await getSlots();
+    
+
+    res.status = 200;
+    res.send(slots);
+
+    console.log("data sent")
+
+  } catch(e){
+    console.log("couldnt get slots mb")
+    res.status = 400; 
+  }
+
+})
 
 app.post('/content', (req, res) => {
   try {

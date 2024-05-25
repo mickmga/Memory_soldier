@@ -1,5 +1,5 @@
 window.onload = function () {
-    console.log("let's go, you are ready to start building");
+  buildItems();
 };
 let cameraLaunched = false;
 let leftCameraLaunched = false;
@@ -195,6 +195,7 @@ const animateCharacter = (spriteBase, spriteLength) => {
   }
 
   const updateSlotImage = (src: string) => {
+    console.log("updating img")
      const result = fetch("http://localhost:3000/slot/update_item?src=" + src + "&slot_id=" + selectedSlot).then(
      res => {
         if(res.status === 200){
@@ -244,4 +245,41 @@ const animateCharacter = (spriteBase, spriteLength) => {
       // Handle any errors that occurred during the fetch
       console.error('Error:', error);
     });
+  }
+
+
+  const IdToLeftMapping = {
+    '6651edbcf4e3753d494b29de' : '7.5',
+    '6651edbcf4e3753d494b29e0' : '27.5',
+    '6651edbcf4e3753d494b29e2' : '50.5',
+    '6651edbcf4e3753d494b29e4' : '72.5',
+    '6651edbcf4e3753d494b29e6' : '87.5',
+    '6651edbcf4e3753d494b29e8' : '100',
+    '6651edbcf4e3753d494b29ea' : '125',
+    '6651edbcf4e3753d494b29ec' : '150',
+    '6651edbcf4e3753d494b29ee' : '175',
+    '6651edbcf4e3753d494b29f0' : '200',
+    '6651edbcf4e3753d494b29f2' : '225',
+    '6651edbcf4e3753d494b29f4' : '250',
+    '6651edbcf4e3753d494b29f6' : '275',
+    '6651edbcf4e3753d494b29f8' : '300',
+    '6651edbcf4e3753d494b29fa' : '325'
+  }
+
+  const buildItems = () => {
+
+    console.log("building items");
+  
+   const slots = fetch("http://localhost:3000/slotData").then(
+      response => response.json()).then( resp => {
+        
+        resp.forEach(slot => {
+         const slotElement =  document.getElementById('img_slot_' + IdToLeftMapping[slot.element_id])! as HTMLImageElement;
+         slotElement.src = slot.image; 
+        });
+
+        console.log(resp);
+      });
+
+
   }

@@ -243,3 +243,8 @@ body {
     bottom: 5%;
     right: 5%;
   }
+
+
+  .slotContainer{
+    cursor: pointer;
+  }

@@ -247,7 +247,7 @@ const generateCastleSlotsDataBlocks = async (templateElements) => {
       const slotData = await new PalaceSlotData(
         {
           element_id: templateEl,
-          image: "none"
+          image: "assets/items/courage.png"
         }
       ).save();
 

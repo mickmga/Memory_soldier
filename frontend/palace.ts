@@ -8,6 +8,8 @@ let walking = false;
 let walkingLeft = false;
 let singleAnimationSelectedSprite = 0;
 let openedMenu = false;
+let currentItemsStates = null;
+
 
 let selectedSlot: string | null = null;
 
@@ -267,19 +269,15 @@ const animateCharacter = (spriteBase, spriteLength) => {
   }
 
   const buildItems = () => {
-
-    console.log("building items");
   
    const slots = fetch("http://localhost:3000/slotData").then(
       response => response.json()).then( resp => {
-        
+        currentItemsStates = resp;
+
         resp.forEach(slot => {
          const slotElement =  document.getElementById('img_slot_' + IdToLeftMapping[slot.element_id])! as HTMLImageElement;
          slotElement.src = slot.image; 
         });
-
-        console.log(resp);
       });
-
 
   }
